@@ -1,0 +1,11 @@
+[generators]
+cmake
+
+[requires]
+boost/1.68.0@conan/stable
+portaudio/v190600.20161030@bincrafters/stable
+opus/1.2.1@bincrafters/stable
+
+[options]
+
+[imports]
