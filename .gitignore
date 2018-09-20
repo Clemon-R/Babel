@@ -6,3 +6,11 @@ idea
 *.o
 *~
 *#
+conanbuildinfo.txt
+conaninfo.txt
+*.cbp
+Makefile
+bin
+CMakeFiles
+CMakeCache.txt
+*.cmake
