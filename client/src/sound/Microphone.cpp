@@ -65,15 +65,11 @@ namespace sound
         _frameIndex = 0;
         _records.clear();
         err = Pa_Initialize();
-        if (err != paNoError) {
-            std::cerr << "microphone: impossible to init the microphone\n";
-            return;
-        }
+        if (err != paNoError)
+            throw Exception("microphone: impossible to init the microphone");
         inputParameters.device = Pa_GetDefaultInputDevice();
-        if (inputParameters.device == paNoDevice) {
-            std::cerr << "microphone: no default input device found\n";
-            return;
-        }
+        if (inputParameters.device == paNoDevice)
+            throw Exception("microphone: no default input device found");
         inputParameters.channelCount = 2;
         inputParameters.sampleFormat = PA_SAMPLE_TYPE;
         inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
@@ -88,25 +84,19 @@ namespace sound
                 paClipOff,
                 recordCallback,
                 this);
-        if (err != paNoError) {
-            std::cerr << "microphone: impossible to init the stream\n";
-            return;
-        }
+        if (err != paNoError)
+            throw Exception("microphone: impossible to init the stream");
         err = Pa_StartStream(_stream);
-        if (err != paNoError) {
-            std::cerr << "microphone: impossible to start the stream\n";
-            return;
-        }
+        if (err != paNoError)
+            throw Exception("microphone: impossible to start the stream");
         std::cout << "microphone: on\n";
     }
 
     void Microphone::stop()
     {
         _record = false;
-        if(Pa_CloseStream(_stream) != paNoError) {
-            std::cerr << "microphone: error while closing\n";
-            return;
-        }
+        if(Pa_CloseStream(_stream) != paNoError)
+            throw Exception("microphone: error while closing");
         _stream = nullptr;
         std::cout << "microphone: off\n";
     }
@@ -144,7 +134,8 @@ namespace sound
     void Microphone::removeRecords(int size)
     {
         _lock.lock();
-        _records.erase(_records.begin(), _records.begin()+size);
+        if (size > 0)
+            _records.erase(_records.begin(), _records.begin()+size);
         _lock.unlock();
     }
 };

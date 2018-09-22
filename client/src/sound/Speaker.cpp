@@ -3,6 +3,7 @@
 //
 
 #include "Speaker.hpp"
+#include "../Exception.hpp"
 
 static int playCallback( const void *inputBuffer, void *outputBuffer,
                          unsigned long framesPerBuffer,
@@ -58,10 +59,8 @@ namespace sound
 
         _frameIndex = 0;
         outputParameters.device = Pa_GetDefaultOutputDevice();
-        if (outputParameters.device == paNoDevice) {
-            std::cerr << "speaker: no default device found\n";
-            return;
-        }
+        if (outputParameters.device == paNoDevice)
+            throw Exception("speaker: no default device found");
         outputParameters.channelCount = 2;
         outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
         outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
@@ -76,25 +75,19 @@ namespace sound
                 paClipOff,
                 playCallback,
                 this);
-        if (err != paNoError){
-            std::cerr << "speaker: impossible to init the stream\n";
-            return;
-        }
+        if (err != paNoError)
+            throw Exception("speaker: impossible to init the stream");
         err = Pa_StartStream(_stream);
-        if (err != paNoError){
-            std::cerr << "speaker: error while starting the stream\n";
-            return;
-        }
+        if (err != paNoError)
+            throw Exception("speaker: error while starting the stream");
         std::cout << "speaker: on\n";
     }
 
     void Speaker::stop()
     {
         _state = false;
-        if(Pa_CloseStream(_stream) != paNoError) {
-            std::cerr << "microphone: error while closing\n";
-            return;
-        }
+        if(Pa_CloseStream(_stream) != paNoError)
+            throw Exception("microphone: error while closing");
         _stream = nullptr;
         std::cout << "speaker: off\n";
     }
