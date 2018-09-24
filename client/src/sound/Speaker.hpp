@@ -21,7 +21,7 @@ namespace sound {
         void stop();
 
         bool isSpeaking();
-        std::vector<float>  &getFrames();
+        std::vector<std::vector<SAMPLE>>  &getFrames();
         void increaseFrameIndexBy(int);
         std::mutex  &getLock();
         void    addFrames(std::vector<SAMPLE> &values);
@@ -29,7 +29,7 @@ namespace sound {
         std::mutex  _lock;
         int _frameIndex;
         bool _state;
-        std::vector<SAMPLE> _frames;
+        std::vector<std::vector<SAMPLE>> _frames;
         PaStream *_stream;
     };
 }

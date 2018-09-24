@@ -23,14 +23,13 @@ namespace sound {
         void stop();
 
         bool isRecording();
-        std::vector<SAMPLE>  &getRecords();
+        std::vector<std::vector<SAMPLE>>  &getRecords();
         void increaseFrameIndexBy(int);
-        std::vector<SAMPLE> getCopyRecords();
         std::mutex  &getLock();
-        void removeRecords(int size);
+        std::vector<SAMPLE> getNextSample();
     private:
         int _frameIndex;
-        std::vector<SAMPLE>  _records;
+        std::vector<std::vector<SAMPLE>>  _records;
         std::mutex  _lock;
 
         bool _record;

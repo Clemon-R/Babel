@@ -13,24 +13,21 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 {
     sound::Speaker  *data = (sound::Speaker *)userData;
     SAMPLE  *speaker = (SAMPLE*)outputBuffer;
-    std::vector<SAMPLE>::iterator   it = data->getFrames().begin();
+    std::vector<std::vector<SAMPLE>>::iterator   it = data->getFrames().begin();
 
     (void)inputBuffer;
     (void)timeInfo;
     (void)statusFlags;
     if (!data || !data->isSpeaking())
         return (paComplete);
-    else if (data->getFrames().size() == 0 || data->getFrames().size() < framesPerBuffer)
+    else if (it == data->getFrames().end())
         return (paContinue);
-    data->getLock().lock();
-    for (int i = 0;i < framesPerBuffer;i++){
-        if (it != data->getFrames().end()){
-            *speaker++ = *it++;
-            *speaker++ = *it++;
-        }
+    std::cout << "speaker: nbr frame - " << it->size() << std::endl;
+    for (const SAMPLE value : *it){
+        *speaker++ = value;
     }
-    it--;
-    data->getFrames().erase(data->getFrames().begin(), it);
+    data->getLock().lock();
+    data->getFrames().erase(it);
     data->getLock().unlock();
     data->increaseFrameIndexBy(framesPerBuffer);
     return (paContinue);
@@ -61,7 +58,7 @@ namespace sound
         outputParameters.device = Pa_GetDefaultOutputDevice();
         if (outputParameters.device == paNoDevice)
             throw Exception("speaker: no default device found");
-        outputParameters.channelCount = 2;
+        outputParameters.channelCount = CHANNELS;
         outputParameters.sampleFormat =  PA_SAMPLE_TYPE;
         outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
         outputParameters.hostApiSpecificStreamInfo = NULL;
@@ -71,7 +68,7 @@ namespace sound
                 nullptr,
                 &outputParameters,
                 SAMPLE_RATE,
-                FRAMES_PER_BUFFER,
+                SAMPLE_SIZE,
                 paClipOff,
                 playCallback,
                 this);
@@ -97,7 +94,7 @@ namespace sound
         return (_state && _stream);
     }
 
-    std::vector<SAMPLE> &Speaker::getFrames()
+    std::vector<std::vector<SAMPLE>> &Speaker::getFrames()
     {
         return (_frames);
     }
@@ -114,10 +111,10 @@ namespace sound
 
     void    Speaker::addFrames(std::vector<SAMPLE> &values)
     {
+        if (values.size() == 0)
+            return;
         _lock.lock();
-        for (SAMPLE sound : values){
-            _frames.push_back(sound);
-        }
+        _frames.push_back(values);
         _lock.unlock();
     }
 }

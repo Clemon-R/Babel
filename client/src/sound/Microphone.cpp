@@ -13,6 +13,7 @@ static int  recordCallback(const void *inputBuffer, void *outputBuffer,
 {
     sound::Microphone  *data = (sound::Microphone *)userData;
     const SAMPLE    *mic = (const SAMPLE *)inputBuffer;
+    std::vector<SAMPLE> result;
 
     (void)outputBuffer;
     (void)timeInfo;
@@ -24,18 +25,20 @@ static int  recordCallback(const void *inputBuffer, void *outputBuffer,
     {
         for (int i = 0;i < framesPerBuffer;i++)
         {
-            data->getRecords().push_back(SAMPLE_SILENCE);
-            data->getRecords().push_back(SAMPLE_SILENCE);
+            result.push_back(SAMPLE_SILENCE);
+            if (CHANNELS == 2)
+                result.push_back(SAMPLE_SILENCE);
         }
-    }
-    else
-    {
+    } else {
         for (int i = 0;i < framesPerBuffer;i++)
         {
-            data->getRecords().push_back(*mic++);
-            data->getRecords().push_back(*mic++);
+            result.push_back(*mic++);
+            if (CHANNELS == 2)
+                result.push_back(*mic++);
         }
     }
+    data->getRecords().push_back(result);
+    std::cout << "microphone: nbr frame - " << result.size() << std::endl;
     data->getLock().unlock();
     data->increaseFrameIndexBy(framesPerBuffer);
     return (paContinue);
@@ -70,7 +73,7 @@ namespace sound
         inputParameters.device = Pa_GetDefaultInputDevice();
         if (inputParameters.device == paNoDevice)
             throw Exception("microphone: no default input device found");
-        inputParameters.channelCount = 2;
+        inputParameters.channelCount = CHANNELS;
         inputParameters.sampleFormat = PA_SAMPLE_TYPE;
         inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
         inputParameters.hostApiSpecificStreamInfo = NULL;
@@ -80,7 +83,7 @@ namespace sound
                 &inputParameters,
                 nullptr,
                 SAMPLE_RATE,
-                FRAMES_PER_BUFFER,
+                SAMPLE_SIZE,
                 paClipOff,
                 recordCallback,
                 this);
@@ -106,19 +109,9 @@ namespace sound
         return (_record && _stream);
     }
 
-    std::vector<SAMPLE>  &Microphone::getRecords()
+    std::vector<std::vector<SAMPLE>>  &Microphone::getRecords()
     {
         return (_records);
-    }
-
-    std::vector<SAMPLE>  Microphone::getCopyRecords()
-    {
-        std::vector<SAMPLE> result;
-
-        _lock.lock();
-        result = _records;
-        _lock.unlock();
-        return (result);
     }
 
     void Microphone::increaseFrameIndexBy(int value)
@@ -131,11 +124,17 @@ namespace sound
         return (_lock);
     }
 
-    void Microphone::removeRecords(int size)
+    std::vector<SAMPLE> Microphone::getNextSample()
     {
+        std::vector<std::vector<SAMPLE>>::iterator   current = _records.begin();
+        std::vector<SAMPLE> result;
+
+        if (current == _records.end() || current->size() < SAMPLE_SIZE*CHANNELS)
+            return (result);
         _lock.lock();
-        if (size > 0)
-            _records.erase(_records.begin(), _records.begin()+size);
+        result = *current;
+        _records.erase(current);
         _lock.unlock();
+        return (result);
     }
 };
