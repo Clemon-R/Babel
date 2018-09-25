@@ -17,8 +17,12 @@ public:
 
 	    private slots:
 		    void on_pushButton_Login_clicked();
+            void on_username_textChanged(const QString &);
+            void on_serverAdress_textChanged(const QString &);
+            void on_serverPort_textChanged(const QString &);
 
 private:
+            void textChanged();
 		    Ui::MainWindow *ui;
 		    SecDialog *secDialog;
 };
