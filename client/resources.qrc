@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/add-tab.png</file>
+        <file>resources/logobabel.png</file>
     </qresource>
 </RCC>

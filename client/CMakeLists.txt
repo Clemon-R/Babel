@@ -7,6 +7,8 @@ conan_basic_setup()
 set(CMAKE_AUTOMOC ON)
 
 file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qt.conf [Paths]\nPrefix=${CONAN_QT_ROOT})
+file(MAKE_DIRECTORY ${CONAN_QT_ROOT}/lib/fonts/)
+configure_file(resources/default.ttf ${CONAN_QT_ROOT}/lib/fonts/default.ttf COPYONLY)
 #file(WRITE ${CMAKE_SOURCE_DIRECTORY}/qt.conf [Paths]\nPrefix=${CONAN_QT_ROOT})
 
 include_directories(
@@ -25,6 +27,8 @@ set(SOURCES
         src/codec/Opus.cpp
         src/sound/Microphone.cpp
         src/sound/Speaker.cpp
+        src/forms/mainwindow.cpp
+        src/forms/secdialog.cpp
         )
 set(HEADERS
         src/Exception.hpp
@@ -32,10 +36,14 @@ set(HEADERS
         src/sound/Config.hpp
         src/sound/Microphone.hpp
         src/sound/Speaker.hpp
+        src/forms/mainwindow.h
+        src/forms/secdialog.h
 )
 
 # User interface files
 set(FORMS
+        src/forms/mainwindow.ui
+        src/forms/secdialog.ui
         )
 
 # Resource files
