@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/add-tab.png</file>
+    </qresource>
+</RCC>

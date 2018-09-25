@@ -35,7 +35,7 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 
 namespace sound
 {
-    Speaker::Speaker() : _stream(nullptr), _state(false)
+    Speaker::Speaker() : _state(false), _stream(nullptr)
     {
         std::cout << "speaker: init...\n";
         std::cout << "speaker: initiated\n";

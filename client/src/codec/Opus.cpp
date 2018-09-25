@@ -5,7 +5,7 @@
 #include "Opus.hpp"
 #include "../Exception.hpp"
 
-Opus::Opus() : _encoder(nullptr), _decoder(nullptr)
+Opus::Opus() : _decoder(nullptr), _encoder(nullptr)
 {
     int err;
 

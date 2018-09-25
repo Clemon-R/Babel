@@ -4,12 +4,12 @@
 
 #include <memory>
 #include <thread>
+#include <QtCore/QCoreApplication>
 #include "sound/Microphone.hpp"
 #include "sound/Speaker.hpp"
 #include "codec/Opus.hpp"
 
-
-int main()
+int main(int argc, char *argv[])
 {
     std::unique_ptr<sound::Microphone>  mic(nullptr);
     std::unique_ptr<sound::Speaker>  speak(nullptr);
@@ -30,6 +30,8 @@ int main()
                 speak->addFrames(tmp);
                 bin = codec->encode(mic->getNextSample());
                 tmp = codec->decode(bin);
+                if (std::get<0>(bin))
+                    delete [] std::get<0>(bin);
             }while (tmp.size() > 0);
             Pa_Sleep(100);
         }

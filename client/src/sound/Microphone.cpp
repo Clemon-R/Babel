@@ -23,14 +23,14 @@ static int  recordCallback(const void *inputBuffer, void *outputBuffer,
     data->getLock().lock();
     if (inputBuffer == NULL)
     {
-        for (int i = 0;i < framesPerBuffer;i++)
+        for (unsigned int i = 0;i < framesPerBuffer;i++)
         {
             result.push_back(SAMPLE_SILENCE);
             if (CHANNELS == 2)
                 result.push_back(SAMPLE_SILENCE);
         }
     } else {
-        for (int i = 0;i < framesPerBuffer;i++)
+        for (unsigned int i = 0;i < framesPerBuffer;i++)
         {
             result.push_back(*mic++);
             if (CHANNELS == 2)
