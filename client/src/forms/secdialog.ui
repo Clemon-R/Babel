@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string> Welcome Home LOKO</string>
+    <string>Trying to connect to server...</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
