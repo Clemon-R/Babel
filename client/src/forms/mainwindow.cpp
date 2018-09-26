@@ -14,13 +14,16 @@
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+	ui(new Ui::MainWindow),
+	secDialog(nullptr)
 {
 	ui->setupUi(this);
 	QPixmap pix(":/resources/logobabel.png");
 	int w = ui->label_pic->width();
 	int h = ui->label_pic->height();
 	ui->label_pic->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
+	QIcon icon(":/resources/icon.png");
+	this->setWindowIcon(icon);
     ui->lblInfos->setStyleSheet("QLabel { color : red; }");
 }
 
@@ -34,7 +37,7 @@ void MainWindow::on_pushButton_Login_clicked()
 	QString username = ui->username->text();
     QString ip = ui->serverAdress->text();
     QString port = ui->serverPort->text();
-	secDialog = new SecDialog();
+	secDialog = new SecDialog(this, username.toLocal8Bit().toStdString());
 	this->hide();
 	secDialog->show();
 	return;
@@ -73,18 +76,21 @@ void MainWindow::on_pushButton_Login_clicked()
 void MainWindow::on_username_textChanged(const QString &arg1)
 {
     (void)arg1;
+    ui->lblInfos->setText("a-Z and 0-9 allowed, 3 character minimum");
     textChanged();
 }
 
 void MainWindow::on_serverAdress_textChanged(const QString &arg1)
 {
     (void)arg1;
+    ui->lblInfos->setText("Ip format allowed");
     textChanged();
 }
 
 void MainWindow::on_serverPort_textChanged(const QString &arg1)
 {
     (void)arg1;
+    ui->lblInfos->setText("0-9, 1 character minimum and 6 maximum");
     textChanged();
 }
 
@@ -97,8 +103,13 @@ void MainWindow::textChanged()
     if (std::regex_match(ui->username->text().toLocal8Bit().toStdString(), r_username)
     && std::regex_match(ui->serverAdress->text().toLocal8Bit().toStdString(), r_adress)
     &&  std::regex_match(ui->serverPort->text().toLocal8Bit().toStdString(), r_port)) {
-        ui->lblInfos->setText("ok");
+        ui->lblInfos->setText("");
         ui->lblInfos->setStyleSheet("QLabel { color : green; }");
-        ui->pushButton_Login->setEnabled(true);
+        if (!ui->pushButton_Login->isEnabled())
+            ui->pushButton_Login->setEnabled(true);
+    } else {
+        if (ui->pushButton_Login->isEnabled())
+            ui->pushButton_Login->setEnabled(false);
+        ui->lblInfos->setStyleSheet("QLabel { color : red; }");
     }
 }

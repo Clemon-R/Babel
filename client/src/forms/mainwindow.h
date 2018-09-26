@@ -23,6 +23,7 @@ public:
 
 private:
             void textChanged();
+            
 		    Ui::MainWindow *ui;
 		    SecDialog *secDialog;
 };

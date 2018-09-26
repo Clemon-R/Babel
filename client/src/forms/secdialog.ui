@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1290</width>
-    <height>619</height>
+    <width>309</width>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>LokoVoice - </string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>0</y>
+     <x>110</x>
+     <y>10</y>
      <width>191</width>
-     <height>41</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -29,37 +29,75 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>950</x>
-     <y>20</y>
-     <width>321</width>
-     <height>591</height>
+     <x>10</x>
+     <y>40</y>
+     <width>291</width>
+     <height>521</height>
     </rect>
    </property>
    <property name="title">
     <string>Contact List</string>
    </property>
-   <widget class="QListView" name="listView">
+   <widget class="QListView" name="contactList">
     <property name="geometry">
      <rect>
-      <x>25</x>
+      <x>10</x>
       <y>30</y>
       <width>271</width>
-      <height>501</height>
+      <height>481</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="leaveBtn">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>80</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
    <property name="text">
-    <string>Leave</string>
+    <string>Disconnect</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="closeBtn">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>570</y>
+     <width>141</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="connectBtn">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>570</y>
+     <width>141</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Call</string>
    </property>
   </widget>
  </widget>
