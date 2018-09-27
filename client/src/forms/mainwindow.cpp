@@ -32,7 +32,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_Login_clicked()
 {
-    std::regex  r_adress("([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})");
+    std::regex  r_adress("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
     std::smatch m_adress;
     std::string adress = ui->serverAdress->text().toLocal8Bit().toStdString();
     unsigned char   ip[4];
@@ -56,21 +56,31 @@ void MainWindow::on_pushButton_Login_clicked()
 
 void MainWindow::on_username_textChanged(const QString &arg1)
 {
-    (void)arg1;
+    std::regex r_username("^[a-zA-Z0-9-]+$");
+
+    if (!std::regex_match(arg1.toLocal8Bit().toStdString(), r_username))
+        ui->username->setText(ui->username->text().remove(ui->username->text().size() - 1, 1));
     ui->lblInfos->setText("a-Z and 0-9 allowed, 3 character minimum");
     textChanged();
 }
 
 void MainWindow::on_serverAdress_textChanged(const QString &arg1)
 {
-    (void)arg1;
+    std::regex r_adress("^[0-9.]+$");
+
+    if (!std::regex_match(arg1.toLocal8Bit().toStdString(), r_adress))
+        ui->serverAdress->setText(ui->serverAdress->text().remove(ui->serverAdress->text().size() - 1, 1));
     ui->lblInfos->setText("Ip format allowed");
     textChanged();
 }
 
 void MainWindow::on_serverPort_textChanged(const QString &arg1)
 {
-    (void)arg1;
+
+    std::regex r_port("^[0-9]+$");
+
+    if (!std::regex_match(arg1.toLocal8Bit().toStdString(), r_port))
+        ui->serverPort->setText(ui->serverPort->text().remove(ui->serverPort->text().size() - 1, 1));
     ui->lblInfos->setText("0-9, 1 character minimum and 6 maximum");
     textChanged();
 }
@@ -78,7 +88,7 @@ void MainWindow::on_serverPort_textChanged(const QString &arg1)
 void MainWindow::textChanged()
 {
     std::regex r_username("[a-zA-Z0-9-]{3,}");
-    std::regex r_adress("[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}");
+    std::regex r_adress("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}");
     std::regex r_port("[0-9]{1,6}");
 
     if (std::regex_match(ui->username->text().toLocal8Bit().toStdString(), r_username)

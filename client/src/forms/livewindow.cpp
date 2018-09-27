@@ -38,6 +38,7 @@ void LiveWindow::on_leaveBtn_clicked()
 {
     if (_parent)
         _parent->show();
+    _state = false;
     this->close();
 }
 
@@ -74,7 +75,7 @@ void LiveWindow::on_connectBtn_clicked()
                         delete [] std::get<0>(bin);
                 }while (tmp.size() > 0);
                 tmp.clear();
-                //Pa_Sleep(10);
+                Pa_Sleep(10);
             }
             mic->stop();
             speak->stop();
