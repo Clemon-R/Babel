@@ -16,7 +16,7 @@ namespace sound {
 
     class Microphone {
     public:
-        Microphone();
+        Microphone(int &volume);
         ~Microphone();
 
         void start();
@@ -27,6 +27,7 @@ namespace sound {
         void increaseFrameIndexBy(int);
         std::mutex  &getLock();
         std::vector<SAMPLE> getNextSample();
+        const float   getVolume() const;
     private:
         int _frameIndex;
         std::vector<std::vector<SAMPLE>>  _records;
@@ -34,6 +35,7 @@ namespace sound {
 
         bool _record;
         PaStream    *_stream;
+        int &_volume;
     };
 };
 

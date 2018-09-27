@@ -32,9 +32,9 @@ static int  recordCallback(const void *inputBuffer, void *outputBuffer,
     } else {
         for (unsigned int i = 0;i < framesPerBuffer;i++)
         {
-            result.push_back(*mic++);
+            result.push_back(*mic++ * data->getVolume());
             if (CHANNELS == 2)
-                result.push_back(*mic++);
+                result.push_back(*mic++ * data->getVolume());
         }
     }
     data->getRecords().push_back(result);
@@ -46,7 +46,7 @@ static int  recordCallback(const void *inputBuffer, void *outputBuffer,
 
 namespace sound
 {
-    Microphone::Microphone() : _record(false), _stream(nullptr)
+    Microphone::Microphone(int &volume) : _record(false), _stream(nullptr), _volume(volume)
     {
         std::cout << "microphone: init...\n";
         std::cout << "microphone: initiated\n";
@@ -136,5 +136,10 @@ namespace sound
         _records.erase(current);
         _lock.unlock();
         return (result);
+    }
+
+    const float Microphone::getVolume() const
+    {
+        return (_volume / 100.0F);
     }
 };

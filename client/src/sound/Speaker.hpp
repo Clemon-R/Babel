@@ -14,7 +14,7 @@
 namespace sound {
     class Speaker {
     public:
-        Speaker();
+        Speaker(int &volume);
         ~Speaker();
 
         void start();
@@ -25,12 +25,14 @@ namespace sound {
         void increaseFrameIndexBy(int);
         std::mutex  &getLock();
         void    addFrames(std::vector<SAMPLE> &values);
+        const float getVolume() const;
     private:
         std::mutex  _lock;
         int _frameIndex;
         bool _state;
         std::vector<std::vector<SAMPLE>> _frames;
         PaStream *_stream;
+        int &_volume;
     };
 }
 

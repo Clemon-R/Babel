@@ -17,12 +17,17 @@ public:
     ~LiveWindow();
 
 private slots:
+    void on_parameterBtn_clicked();
     void on_connectBtn_clicked();
     void on_leaveBtn_clicked();
 
 private:
     Ui::LiveWindow *ui;
     QWidget *_parent;
+    QDialog *_child;
+
+    int _volumeSpeaker;
+    int _volumeMicrophone;
 };
 
 #endif // LIVEWINDOW_H

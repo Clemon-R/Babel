@@ -56,9 +56,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>170</x>
      <y>570</y>
-     <width>141</width>
+     <width>61</width>
      <height>25</height>
     </rect>
    </property>
@@ -114,14 +114,30 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>240</x>
      <y>570</y>
-     <width>141</width>
+     <width>61</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
     <string>Call</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="parameterBtn">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>570</y>
+     <width>101</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Parameters</string>
    </property>
   </widget>
  </widget>

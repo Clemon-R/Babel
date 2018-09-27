@@ -24,7 +24,7 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
         return (paContinue);
     std::cout << "speaker: nbr frame - " << it->size() << std::endl;
     for (const SAMPLE value : *it){
-        *speaker++ = value;
+        *speaker++ = value * data->getVolume();
     }
     data->getLock().lock();
     data->getFrames().erase(it);
@@ -35,7 +35,7 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
 
 namespace sound
 {
-    Speaker::Speaker() : _state(false), _stream(nullptr)
+    Speaker::Speaker(int &volume) : _state(false), _stream(nullptr), _volume(volume)
     {
         std::cout << "speaker: init...\n";
         std::cout << "speaker: initiated\n";
@@ -116,5 +116,10 @@ namespace sound
         _lock.lock();
         _frames.push_back(values);
         _lock.unlock();
+    }
+
+    const float Speaker::getVolume() const
+    {
+        return (_volume / 100.0F);
     }
 }
