@@ -17,6 +17,7 @@ public:
     ~LiveWindow();
 
 private slots:
+    void on_closeBtn_clicked();
     void on_parameterBtn_clicked();
     void on_connectBtn_clicked();
     void on_leaveBtn_clicked();
@@ -28,6 +29,7 @@ private:
 
     int _volumeSpeaker;
     int _volumeMicrophone;
+    bool _state;
 };
 
 #endif // LIVEWINDOW_H

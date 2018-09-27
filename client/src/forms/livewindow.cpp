@@ -20,7 +20,8 @@ LiveWindow::LiveWindow(QWidget *parent) :
     _parent(parent),
     _child(nullptr),
     _volumeSpeaker(100),
-    _volumeMicrophone(100)
+    _volumeMicrophone(100),
+    _state(false)
 {
     ui->setupUi(this);
     QIcon icon(":/resources/icon.png");
@@ -42,6 +43,9 @@ void LiveWindow::on_leaveBtn_clicked()
 
 void LiveWindow::on_connectBtn_clicked()
 {
+    _state = true;
+    ui->closeBtn->setEnabled(true);
+    ui->connectBtn->setEnabled(false);
     new std::thread([this](){
         std::unique_ptr<sound::Microphone>  mic(nullptr);
         std::unique_ptr<sound::Speaker>  speak(nullptr);
@@ -57,15 +61,20 @@ void LiveWindow::on_connectBtn_clicked()
                 return;
             mic->start();
             speak->start();
-            for (int i = 0;i < 100;i++){
+            while (_state){
                 do {
-                    speak->addFrames(tmp);
-                    bin = codec->encode(mic->getNextSample());
+                    if (tmp.size() > 0)
+                        speak->addFrames(tmp);
+                    tmp = mic->getNextSample();
+                    if (tmp.size() == 0)
+                        break;
+                    bin = codec->encode(tmp);
                     tmp = codec->decode(bin);
                     if (std::get<0>(bin))
                         delete [] std::get<0>(bin);
                 }while (tmp.size() > 0);
-                Pa_Sleep(100);
+                tmp.clear();
+                //Pa_Sleep(10);
             }
             mic->stop();
             speak->stop();
@@ -83,4 +92,11 @@ void LiveWindow::on_parameterBtn_clicked()
     if (!_child)
         throw Exception("livewindow: impossible to create new window");
     _child->show();
+}
+
+void LiveWindow::on_closeBtn_clicked()
+{
+    ui->closeBtn->setEnabled(false);
+    ui->connectBtn->setEnabled(true);
+    _state = false;
 }

@@ -37,6 +37,9 @@
   <property name="windowTitle">
    <string>LokoVoice - </string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <widget class="QPushButton" name="leaveBtn">
    <property name="geometry">
     <rect>
