@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "secdialog.h"
+
 namespace Ui {
 	class MainWindow;
 }
@@ -25,7 +25,7 @@ private:
             void textChanged();
             
 		    Ui::MainWindow *ui;
-		    SecDialog *secDialog;
+		    QWidget *_child;
 };
 
 #endif // MAINWINDOW_H

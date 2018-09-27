@@ -28,7 +28,7 @@ set(SOURCES
         src/sound/Microphone.cpp
         src/sound/Speaker.cpp
         src/forms/mainwindow.cpp
-        src/forms/secdialog.cpp
+        src/forms/livewindow.cpp
         )
 set(HEADERS
         src/Exception.hpp
@@ -37,13 +37,13 @@ set(HEADERS
         src/sound/Microphone.hpp
         src/sound/Speaker.hpp
         src/forms/mainwindow.h
-        src/forms/secdialog.h
+        src/forms/livewindow.h
 )
 
 # User interface files
 set(FORMS
         src/forms/mainwindow.ui
-        src/forms/secdialog.ui
+        src/forms/livewindow.ui
         )
 
 # Resource files

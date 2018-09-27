@@ -1,18 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SecDialog</class>
- <widget class="QDialog" name="SecDialog">
+ <class>LiveWindow</class>
+ <widget class="QWidget" name="LiveWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>309</width>
-    <height>602</height>
+    <width>310</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>310</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>310</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>310</width>
+    <height>600</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>LokoVoice - </string>
   </property>
+  <widget class="QPushButton" name="leaveBtn">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>91</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Disconnect</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="closeBtn">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>570</y>
+     <width>141</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -54,35 +107,6 @@
      </sizepolicy>
     </property>
    </widget>
-  </widget>
-  <widget class="QPushButton" name="leaveBtn">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>91</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Disconnect</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="closeBtn">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>570</y>
-     <width>141</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Close</string>
-   </property>
   </widget>
   <widget class="QPushButton" name="connectBtn">
    <property name="enabled">
