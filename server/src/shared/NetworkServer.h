@@ -10,18 +10,24 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 #include <unordered_map>
+#include "NetworkSession.h"
 #include "Network.h"
 #include "NetworkSessionHandler.h"
 
 class NetworkServer {
 public:
-    NetworkServer(unsigned short port, NetworkSessionHandler &handler);
+    enum {
+        RANDOM_PORT = 0
+    };
+
+    explicit NetworkServer(NetworkSessionHandler &handler, boost::uint16_t port = RANDOM_PORT);
 
     void run();
+    boost::uint16_t getPort() const;
 
 private:
     void asyncAccept();
-    void onAccept(ptr<NetworkSession> session, error_code error);
+    void onAccept(ptr<NetworkSession> session, error_code const &error);
 
 private:
     boost_io _io;
