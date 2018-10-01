@@ -6,11 +6,6 @@
 #define SERVER_NETWORK_H
 
 #include <boost/asio.hpp>
-#include <boost/cstdint.hpp>
-#include <boost/serialization/string.hpp>
-#include <boost/range/adaptor/transformed.hpp>
-#include <boost/algorithm/string/join.hpp>
-#include <boost/interprocess/streams/bufferstream.hpp>
 
 using sizet = boost::uintmax_t;
 using ssizet = boost::intmax_t;
