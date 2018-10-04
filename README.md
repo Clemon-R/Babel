@@ -7,6 +7,7 @@
 
 ### Pre-required for windows
  * Visual Studio 15 2017 C/C++ : Find on internet
+ * Qt Creator : Find on internet
  * CMake : Find on internet
  * Python3 : Find on internet
  * Conan : `pip3 install conan`
