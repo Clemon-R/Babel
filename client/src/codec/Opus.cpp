@@ -33,9 +33,10 @@ std::tuple<unsigned char *, int>    Opus::encode(const std::vector<SAMPLE> &valu
 {
     int nbBytes = 0;
     int i = 0;
-    float   in[values.size()];
+    float   *in = new float[values.size()];
     unsigned char   *result = new unsigned char[MAX_PACKET_SIZE];
 
+	;
     if (!_encoder)
         throw Exception("opus: no encoder initiated");
     else if (values.size() != SAMPLE_SIZE*CHANNELS || values.size() == 0)
@@ -45,6 +46,7 @@ std::tuple<unsigned char *, int>    Opus::encode(const std::vector<SAMPLE> &valu
     nbBytes = opus_encode_float(_encoder, in, SAMPLE_SIZE, result, MAX_PACKET_SIZE);
     if (nbBytes <= 0)
         throw Exception("opus: error while encoding");
+	delete[] in;
     std::cout << "opus: nbr of bytes - " << nbBytes << std::endl;
     return (std::tuple<unsigned char *, int>(result, nbBytes));
 }

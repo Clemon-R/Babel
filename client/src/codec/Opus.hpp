@@ -14,6 +14,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <tuple>
 
 class Opus {
 public:
