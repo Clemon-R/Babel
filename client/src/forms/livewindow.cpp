@@ -1,6 +1,7 @@
 #include "livewindow.h"
 #include "mainwindow.h"
 #include "soundmanagerwindow.h"
+#include "receptioncallwindow.h"
 #include "ui_livewindow.h"
 #include "../sound/Microphone.hpp"
 #include "../sound/Speaker.hpp"
@@ -21,7 +22,8 @@ LiveWindow::LiveWindow(QWidget *parent) :
     _child(nullptr),
     _volumeSpeaker(100),
     _volumeMicrophone(100),
-    _state(false)
+    _state(false),
+	_call(nullptr)
 {
     ui->setupUi(this);
     QIcon icon(":/resources/icon.png");
@@ -47,6 +49,9 @@ void LiveWindow::on_connectBtn_clicked()
     _state = true;
     ui->closeBtn->setEnabled(true);
     ui->connectBtn->setEnabled(false);
+	_call = new ReceptionCallWindow(this);
+	_call->show();
+	return;
     new std::thread([this](){
         std::unique_ptr<sound::Microphone>  mic(nullptr);
         std::unique_ptr<sound::Speaker>  speak(nullptr);

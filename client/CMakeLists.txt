@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(client CXX)
+project(babel_client CXX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
@@ -31,6 +31,7 @@ set(SOURCES
         src/forms/mainwindow.cpp
         src/forms/livewindow.cpp
         src/forms/soundmanagerwindow.cpp
+        src/forms/receptioncallwindow.cpp
         )
 set(HEADERS
         src/Exception.hpp
@@ -41,6 +42,7 @@ set(HEADERS
         src/forms/mainwindow.h
         src/forms/livewindow.h
         src/forms/soundmanagerwindow.h
+        src/forms/receptioncallwindow.h
 )
 
 # User interface files
@@ -48,6 +50,7 @@ set(FORMS
         src/forms/mainwindow.ui
         src/forms/livewindow.ui
         src/forms/soundmanagerwindow.ui
+        src/forms/receptioncallwindow.ui
         )
 
 # Resource files
@@ -65,7 +68,7 @@ qt5_wrap_ui(UIC_SOURCES ${FORMS})
 qt5_add_resources(RCC_SOURCES ${RESOURCES})
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
 
-add_executable(client ${UIS} ${RESOURCES} ${SOURCES} ${HEADERS} ${UIC_SOURCES} ${RCC_SOURCES})
+add_executable(babel_client ${UIS} ${RESOURCES} ${SOURCES} ${HEADERS} ${UIC_SOURCES} ${RCC_SOURCES})
 
-target_link_libraries(client ${CONAN_LIBS})
-target_link_libraries(client ${LIBRARIES})
+target_link_libraries(babel_client ${CONAN_LIBS})
+target_link_libraries(babel_client ${LIBRARIES})
