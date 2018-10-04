@@ -14,7 +14,7 @@ public:
 
     void seek(sizet set);
     sizet tell() const;
-    void reset(char const *buffer);
+    void reset(char const *buffer, sizet size);
 
     std::string readUtf();
     float readFloat();
@@ -38,6 +38,9 @@ private:
         T value;
         auto *casted = (char *) &value;
         sizet size = sizeof(T);
+
+        if (_position + size > _size)
+            throw std::runtime_error("exceeded buffer");
 
         for (sizet i=0; i < size; ++i)
             casted[i] = _buffer[_position + i];

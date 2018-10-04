@@ -27,9 +27,8 @@ void NetworkClientHandler::onReceived(ptr<NetworkSession> session, const char *d
         std::cout << "[client" << session->getId() << "]: recv " << *msg << std::endl;
         _controller->parseMessage(client, msg.get());
     } catch(std::exception &e) {
-        printf("[client %zu]: invalid data received, client kicked", session->getId());
-        onDisconnect(session, error_code());
-        return;
+        printf("[client %zu]: invalid data received, client kicked\n", session->getId());
+        client->kick();
     }
 }
 

@@ -18,5 +18,7 @@ void ServerController::onDisconnect(NetworkClient *client, error_code const &err
 }
 
 void ServerController::onHello(NetworkClient *client, HelloConnectMessage *msg) {
-
+    std::string str("1029384765TEYRUFIDJFLSKAMZL");
+    sizet i = 27;
+    client->getSession()->send(str.c_str(), i);
 }

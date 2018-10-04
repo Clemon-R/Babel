@@ -13,7 +13,7 @@ NetworkServerHandler::NetworkServerHandler(NetworkController &controller, HookNe
 
 
 void NetworkServerHandler::onConnect(ptr<NetworkSession> session) const {
-    printf("[server]: connected\n");
+    printf("[network]: connected\n");
     _connector->setClient(_connector->clientProvider(session));
     _controller->onConnect(_connector->getClient());
 }
@@ -22,24 +22,27 @@ void NetworkServerHandler::onConnect(ptr<NetworkSession> session) const {
 void NetworkServerHandler::onReceived(ptr<NetworkSession> session, const char *data, sizet size) const {
     try {
         auto msg = _connector->getClient()->read(data, size);
-        std::cout << "[server]: recv " << *msg << std::endl;
+        std::cout << "[network]: recv " << *msg << std::endl;
         _controller->parseMessage(_connector->getClient(), msg.get());
     } catch(std::exception &e) {
-        onDisconnect(session, error_code());
-        return;
+        session->getSocket().close();
     }
 }
 
 
 void NetworkServerHandler::onSent(ptr<NetworkSession> session, const char *data, sizet size) const {
-    auto msg = _connector->getClient()->read(data, size);
-    std::cout << "[server] sent " << *msg << std::endl;
+    try {
+        auto msg = _connector->getClient()->read(data, size);
+        std::cout << "[network]: sent " << *msg << std::endl;
+    } catch(std::exception &e) {
+        std::cout << "[network]: sent invalid data, server will kick you" << std::endl;
+    }
 }
 
 
 void NetworkServerHandler::onDisconnect(ptr<NetworkSession> session, error_code const &error) const {
     if (error)
-        printf("[server]: error: %s\n", error.message().c_str());
-    printf("[server]: disconnected\n");
+        printf("[network]: error: %s\n", error.message().c_str());
+    printf("[network]: disconnected\n");
     _controller->onDisconnect(_connector->getClient(), error);
 }

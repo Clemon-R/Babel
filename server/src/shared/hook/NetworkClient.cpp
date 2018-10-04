@@ -18,7 +18,7 @@ void NetworkClient::send(NetworkMessage const &message) {
 }
 
 std::unique_ptr<NetworkMessage> NetworkClient::read(char const *bytes, sizet length) {
-    _reader.reset(bytes);
+    _reader.reset(bytes, length);
     return NetworkProtocol::deserialize(_reader);
 }
 
@@ -28,4 +28,8 @@ void NetworkClient::kick() {
 
 sizet NetworkClient::getId() const {
     return _session->getId();
+}
+
+ptr<NetworkSession> &NetworkClient::getSession() {
+    return _session;
 }

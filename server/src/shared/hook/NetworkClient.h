@@ -19,6 +19,7 @@ public:
 
     void kick();
     virtual sizet getId() const;
+    ptr<NetworkSession> &getSession();
 
 private:
     ptr<NetworkSession> _session;

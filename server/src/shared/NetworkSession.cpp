@@ -43,8 +43,16 @@ void NetworkSession::onRead(const error_code &error) {
             _state = AWAIT_PACKET_CONTENT;
 
             std::string s(_buffer.begin(), _buffer.end());
-            _reader.reset(&s[0]);
-            header_type packet_size = _reader.readUlong();
+            header_type packet_size;
+            _reader.reset(&s[0], s.size());
+
+            try {
+                packet_size = _reader.readUlong();
+            } catch (std::exception &e) {
+                _socket.close();
+                return;
+            }
+
             asyncRead(packet_size);
             break;
         }
