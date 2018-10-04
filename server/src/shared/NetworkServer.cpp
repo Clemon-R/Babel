@@ -5,10 +5,10 @@
 #include "NetworkServer.h"
 #include "NetworkSession.h"
 
-NetworkServer::NetworkServer(NetworkSessionHandler &handler, boost::uint16_t port)
+NetworkServer::NetworkServer(NetworkSessionHandler *handler, boost::uint16_t port)
         : _io(),
           _acceptor(_io, tcp::endpoint(tcp::v4(), port)),
-          _handler(&handler)
+          _handler(handler)
 {}
 
 void NetworkServer::run() {

@@ -20,9 +20,9 @@ public:
         RANDOM_PORT = 0
     };
 
-    explicit NetworkServer(NetworkSessionHandler &handler, boost::uint16_t port = RANDOM_PORT);
+    explicit NetworkServer(NetworkSessionHandler *handler, boost::uint16_t port = RANDOM_PORT);
 
-    void run();
+    virtual void run();
     boost::uint16_t getPort() const;
 
 private:

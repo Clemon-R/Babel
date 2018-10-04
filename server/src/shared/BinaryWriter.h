@@ -28,9 +28,19 @@ public:
     void writeLong(boost::int64_t);
     void writeUlong(boost::uint64_t);
 
+    template<class T>
+    BinaryWriter &operator&(T primitive) {
+        writeType<T>(primitive);
+        return *this;
+    }
+
 private:
-    template <class T>
-    void writeType(T value);
+    template<class T>
+    void writeType(T value) {
+        sizet size = sizeof(T);
+        _buffer.insert(_buffer.begin() + _position, (char *)&value, (char *)&value + size);
+        _position += size;
+    }
 
 private:
     buffer_t _buffer;

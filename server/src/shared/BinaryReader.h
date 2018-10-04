@@ -10,7 +10,7 @@
 class BinaryReader {
 public:
     BinaryReader();
-    explicit BinaryReader(char const *buffer);
+    explicit BinaryReader(char const *buffer, sizet size);
 
     void seek(sizet set);
     sizet tell() const;
@@ -26,12 +26,28 @@ public:
     boost::int64_t readLong();
     boost::uint64_t readUlong();
 
+    template<class T>
+    BinaryReader &operator&(T &primitive) {
+        primitive = readType<T>();
+        return *this;
+    }
+
 private:
-    template <class T>
-    T readType();
+    template<class T>
+    T readType() {
+        T value;
+        auto *casted = (char *) &value;
+        sizet size = sizeof(T);
+
+        for (sizet i=0; i < size; ++i)
+            casted[i] = _buffer[_position + i];
+        _position += size;
+        return value;
+    }
 
 private:
     char const *_buffer;
+    sizet _size;
     sizet _position;
 };
 

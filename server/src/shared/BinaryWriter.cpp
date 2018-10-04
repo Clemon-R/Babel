@@ -9,13 +9,6 @@ BinaryWriter::BinaryWriter()
           _position(0)
 {}
 
-template<class T>
-void BinaryWriter::writeType(T value) {
-    sizet size = sizeof(T);
-    _buffer.insert(_buffer.begin() + _position, (char *)&value, (char *)&value + size);
-    _position += size;
-}
-
 void BinaryWriter::writeUtf(std::string const &value) {
     boost::uint64_t size = value.size();
     writeUlong(size);

@@ -9,22 +9,10 @@ BinaryReader::BinaryReader()
           _position(0)
 {}
 
-BinaryReader::BinaryReader(char const *buffer)
+BinaryReader::BinaryReader(char const *buffer, sizet size)
         : _buffer(buffer),
           _position(0)
 {}
-
-template<class T>
-T BinaryReader::readType() {
-    T value;
-    auto *casted = (char *) &value;
-    sizet size = sizeof(T);
-
-    for (sizet i=0; i < size; ++i)
-        casted[i] = _buffer[_position + i];
-    _position += size;
-    return value;
-}
 
 std::string BinaryReader::readUtf() {
     boost::uint64_t size = readUlong();
