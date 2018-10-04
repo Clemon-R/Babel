@@ -9,17 +9,20 @@
 #include "shared/hook/NetworkController.h"
 #include "BabelServer.h"
 #include "BabelClient.h"
+#include "protocol/HelloConnectMessage.h"
 
-class BabelController : public NetworkController<BabelClient> {
+class BabelController : public NetworkController {
 public:
+    void onConnect(NetworkClient *client) override;
+    void onDisconnect(NetworkClient *client, error_code const &error) override;
+
+    void onHello(BabelClient *client, HelloConnectMessage *msg);
+
     void setServer(BabelServer &server) {
         _server = &server;
     }
-
 protected:
     void defineMessageHandlers(handlers_t &handlers) override;
-    void onConnect(BabelClient *client) override;
-    void onDisconnect(BabelClient *client, error_code &error) override;
 
 private:
     BabelServer *_server;

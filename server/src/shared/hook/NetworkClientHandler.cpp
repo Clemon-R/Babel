@@ -6,37 +6,46 @@
 #include "NetworkClientHandler.h"
 #include "HookNetworkServer.h"
 
-template<class T>
-NetworkClientHandler<T>::NetworkClientHandler(NetworkController<T> &controller, HookNetworkServer<T> &server)
+
+NetworkClientHandler::NetworkClientHandler(NetworkController &controller, HookNetworkServer &server)
         : _controller(&controller),
           _server(&server)
 {}
 
-template<class T>
-void NetworkClientHandler<T>::onConnect(ptr<NetworkSession> session) const {
-    printf("[client %zu] connected\n", session->getId());
-    _server->getClients()[session->getId()] = std::make_unique<NetworkClient>(session);
+
+void NetworkClientHandler::onConnect(ptr<NetworkSession> session) const {
+    printf("[client %zu]: connected\n", session->getId());
+    _server->getClients()[session->getId()] = _server->clientProvider(session);
+    _controller->onConnect(_server->getClients()[session->getId()].get());
 }
 
-template<class T>
-void NetworkClientHandler<T>::onReceived(ptr<NetworkSession> session, const char *data, sizet size) const {
-    printf("received : [");
-    for (sizet i=0; i < size; ++i)
-        printf("%d.", data[i]);
-    printf("]\n");
+void NetworkClientHandler::onReceived(ptr<NetworkSession> session, const char *data, sizet size) const {
+    NetworkClient *client = _server->getClients()[session->getId()].get();
+
+    try {
+        auto msg = client->read(data, size);
+        std::cout << "[client" << session->getId() << "]: recv " << *msg << std::endl;
+        _controller->parseMessage(client, msg.get());
+    } catch(std::exception &e) {
+        printf("[client %zu]: invalid data received, client kicked", session->getId());
+        onDisconnect(session, error_code());
+        return;
+    }
 }
 
-template<class T>
-void NetworkClientHandler<T>::onSent(ptr<NetworkSession> session, const char *data, sizet size) const {
-    printf("sent : [");
-    for (sizet i=0; i < size; ++i)
-        printf("%d.", data[i]);
-    printf("]\n");
+
+void NetworkClientHandler::onSent(ptr<NetworkSession> session, const char *data, sizet size) const {
+    NetworkClient *client = _server->getClients()[session->getId()].get();
+
+    auto msg = client->read(data, size);
+    std::cout << "[client " << session->getId() << "]: sent " << *msg << std::endl;
 }
 
-template<class T>
-void NetworkClientHandler<T>::onDisconnect(ptr<NetworkSession> session, error_code const &error) const {
+
+void NetworkClientHandler::onDisconnect(ptr<NetworkSession> session, error_code const &error) const {
     if (error)
-        printf("client %zu error: %s\n", session->getId(), error.message().c_str());
-    printf("disconnected %zu\n", session->getId());
+        printf("[client %zu]: error: %s\n", session->getId(), error.message().c_str());
+    printf("[client %zu]: disconnected\n", session->getId());
+    _controller->onDisconnect(_server->getClients()[session->getId()].get(), error);
+    _server->getClients().erase(session->getId());
 }

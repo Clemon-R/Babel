@@ -6,6 +6,7 @@
 #define SERVER_NETWORK_H
 
 #include <boost/asio.hpp>
+#include <boost/cstdint.hpp>
 
 using sizet = boost::uintmax_t;
 using ssizet = boost::intmax_t;

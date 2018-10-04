@@ -16,10 +16,8 @@ using handlers_t = std::unordered_map<sizet, handler_t>;
 template <typename T, typename V, typename X>
 using typed_handler_t = void (T::*)(X *, V *);
 
-template<class D>
 class NetworkController {
 public:
-
     virtual void init() {
         defineMessageHandlers(_handlers);
     }
@@ -28,21 +26,21 @@ public:
         try {
             _handlers.at((msg->getOpcode()))(client, msg);
         } catch (std::exception &e) {
-            std::cerr << "no handler found for protocol id " << msg->getOpcode() << std::endl;
+            std::cerr << "no handler found for protocol id: " << e.what() << msg->getOpcode() << std::endl;
             throw std::runtime_error(e.what());
         }
     }
 
+    virtual void onConnect(NetworkClient *client) = 0;
+    virtual void onDisconnect(NetworkClient *client, error_code const &error) = 0;
+
 protected:
-
     virtual void defineMessageHandlers(handlers_t &handlers) = 0;
-    virtual void onConnect(D *client) = 0;
-    virtual void onDisconnect(D *client, error_code &error) = 0;
 
-    template <typename T,typename V>
-    handler_t handler(T &holder, typed_handler_t<T, V, D> addr) {
-        return [&holder, addr](D *client, NetworkMessage *msg) mutable {
-            (holder.*addr)(client, dynamic_cast<V *>(msg));
+    template <typename T,typename V,typename X>
+    handler_t handler(T *holder, typed_handler_t<T, V, X> addr) {
+        return [&holder, addr](NetworkClient *client, NetworkMessage *msg) mutable {
+            (*holder.*addr)(dynamic_cast<X *>(client), dynamic_cast<V *>(msg));
         };
     };
 

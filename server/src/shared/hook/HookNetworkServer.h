@@ -12,25 +12,22 @@
 #include "../NetworkServer.h"
 #include "NetworkClientHandler.h"
 
-template<class T>
-using clients_t = std::unordered_map<session_id, std::unique_ptr<T>>;
+using clients_t = std::unordered_map<session_id, std::unique_ptr<NetworkClient>>;
 
-template<class T>
 class HookNetworkServer: public NetworkServer {
 public:
-    explicit HookNetworkServer(NetworkController<T> &controller, boost::uint16_t port = RANDOM_PORT);
+    explicit HookNetworkServer(NetworkController &controller, boost::uint16_t port = RANDOM_PORT);
     virtual ~HookNetworkServer() {}
 
     void run() override;
-    clients_t<T> &getClients();
+    clients_t &getClients();
 
-protected:
-    virtual std::unique_ptr<T> clientProvider(ptr<NetworkSession> session) = 0;
+    virtual std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session) = 0;
 
 private:
-    NetworkClientHandler<T> _handler;
-    NetworkController<T> *_controller;
-    clients_t<T> _clients;
+    NetworkClientHandler _handler;
+    NetworkController *_controller;
+    clients_t _clients;
 };
 
 #endif //SERVER_HOOKNETWORKSERVER_H

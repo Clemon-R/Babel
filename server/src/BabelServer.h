@@ -10,14 +10,12 @@
 #include "shared/NetworkServer.h"
 #include "shared/hook/NetworkClient.h"
 #include "shared/hook/HookNetworkServer.h"
-#include "BabelClient.h"
 
-class BabelServer: public HookNetworkServer<BabelClient> {
+class BabelServer: public HookNetworkServer {
 public:
-    explicit BabelServer(NetworkController<BabelClient> &controller, boost::uint16_t port = RANDOM_PORT);
+    explicit BabelServer(NetworkController &controller, boost::uint16_t port = RANDOM_PORT);
 
-protected:
-    std::unique_ptr<BabelClient> clientProvider(ptr<NetworkSession> session) override;
+    std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session) override;
 };
 
 

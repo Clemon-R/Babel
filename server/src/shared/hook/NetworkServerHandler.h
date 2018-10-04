@@ -2,18 +2,18 @@
 // Created by romain on 04/10/18.
 //
 
-#ifndef SERVER_HOOKNETWORKHANDLER_H
-#define SERVER_HOOKNETWORKHANDLER_H
+#ifndef SERVER_ABWORKHANDLER_H
+#define SERVER_ABWORKHANDLER_H
 
 
 #include "../NetworkSessionHandler.h"
 #include "NetworkController.h"
 
-class HookNetworkServer;
+class HookNetworkConnector;
 
-class NetworkClientHandler: public NetworkSessionHandler {
+class NetworkServerHandler: public NetworkSessionHandler {
 public:
-    NetworkClientHandler(NetworkController &controller, HookNetworkServer &server);
+    NetworkServerHandler(NetworkController &controller, HookNetworkConnector &connector);
 
     void onConnect(ptr<NetworkSession> session) const override;
     void onReceived(ptr<NetworkSession> session, const char *data, sizet size) const override;
@@ -22,8 +22,8 @@ public:
 
 private:
     NetworkController *_controller;
-    HookNetworkServer *_server;
+    HookNetworkConnector *_connector;
 };
 
 
-#endif //SERVER_HOOKNETWORKHANDLER_H
+#endif //SERVER_ABWORKHANDLER_H

@@ -12,15 +12,15 @@
 
 class NetworkConnector {
 public:
-    NetworkConnector(std::string const &host, boost::uint16_t port, NetworkSessionHandler &handler);
-    NetworkConnector(std::string const &host, std::string const &port, NetworkSessionHandler &handler);
+    NetworkConnector(std::string const &host, boost::uint16_t port, NetworkSessionHandler *handler);
+    NetworkConnector(std::string const &host, std::string const &port, NetworkSessionHandler *handler);
 
-    void connect(bool useThread = false);
+    virtual void connect(bool useThread = false);
     boost::thread &getThread();
     ptr<NetworkSession> &getSession();
 
 private:
-    void start();
+    virtual void start();
     void onConnect(error_code const &error);
 
 private:

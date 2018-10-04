@@ -6,22 +6,22 @@
 #include "NetworkSession.h"
 #include <boost/bind.hpp>
 
-NetworkConnector::NetworkConnector(std::string const &host, boost::uint16_t port, NetworkSessionHandler &handler)
+NetworkConnector::NetworkConnector(std::string const &host, boost::uint16_t port, NetworkSessionHandler *handler)
         : _io(),
           _resolver(_io),
           _query(host, std::to_string(port)),
           _endpoint(_resolver.resolve(_query)),
-          _handler(&handler),
+          _handler(handler),
           _session(),
           _thread()
 {}
 
-NetworkConnector::NetworkConnector(std::string const &host, std::string const &port, NetworkSessionHandler &handler)
+NetworkConnector::NetworkConnector(std::string const &host, std::string const &port, NetworkSessionHandler *handler)
         : _io(),
           _resolver(_io),
           _query(host, port),
           _endpoint(_resolver.resolve(_query)),
-          _handler(&handler),
+          _handler(handler),
           _session(),
           _thread()
 {}
