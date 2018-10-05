@@ -12,6 +12,7 @@
 LiveWindow::LiveWindow(QWidget *parent, const std::string &username, unsigned char *ip, unsigned short port) :
     LiveWindow(parent)
 {
+	this->_username = username;
     this->setWindowTitle(this->windowTitle() + QString::fromStdString(username));
 }
 
@@ -44,51 +45,57 @@ void LiveWindow::on_leaveBtn_clicked()
     this->close();
 }
 
+void	LiveWindow::setState(bool state)
+{
+	_state = state;
+	ui->closeBtn->setEnabled(state);
+	ui->connectBtn->setEnabled(!state);
+	if (state) {
+		new std::thread([this]() {
+			std::unique_ptr<sound::Microphone>  mic(nullptr);
+			std::unique_ptr<sound::Speaker>  speak(nullptr);
+			std::unique_ptr<Opus>   codec(nullptr);
+			std::tuple<unsigned char *, int>    bin;
+			std::vector<SAMPLE> tmp;
+
+			try {
+				codec.reset(new Opus());
+				speak.reset(new sound::Speaker(_volumeSpeaker));
+				mic.reset(new sound::Microphone(_volumeMicrophone));
+				if (!mic)
+					return;
+				mic->start();
+				speak->start();
+				while (_state) {
+					do {
+						if (tmp.size() > 0)
+							speak->addFrames(tmp);
+						tmp = mic->getNextSample();
+						if (tmp.size() == 0)
+							break;
+						bin = codec->encode(tmp);
+						tmp = codec->decode(bin);
+						if (std::get<0>(bin))
+							delete[] std::get<0>(bin);
+					} while (tmp.size() > 0);
+					tmp.clear();
+					Pa_Sleep(10);
+				}
+				mic->stop();
+				speak->stop();
+				Pa_Terminate();
+			}
+			catch (const std::exception &error) {
+				std::cerr << error.what() << std::endl;
+			}
+		});
+	}
+}
+
 void LiveWindow::on_connectBtn_clicked()
 {
-    _state = true;
-    ui->closeBtn->setEnabled(true);
-    ui->connectBtn->setEnabled(false);
-	_call = new ReceptionCallWindow(this);
-	_call->show();
-	return;
-    new std::thread([this](){
-        std::unique_ptr<sound::Microphone>  mic(nullptr);
-        std::unique_ptr<sound::Speaker>  speak(nullptr);
-        std::unique_ptr<Opus>   codec(nullptr);
-        std::tuple<unsigned char *, int>    bin;
-        std::vector<SAMPLE> tmp;
-
-        try{
-            codec.reset(new Opus());
-            speak.reset(new sound::Speaker(_volumeSpeaker));
-            mic.reset(new sound::Microphone(_volumeMicrophone));
-            if (!mic)
-                return;
-            mic->start();
-            speak->start();
-            while (_state){
-                do {
-                    if (tmp.size() > 0)
-                        speak->addFrames(tmp);
-                    tmp = mic->getNextSample();
-                    if (tmp.size() == 0)
-                        break;
-                    bin = codec->encode(tmp);
-                    tmp = codec->decode(bin);
-                    if (std::get<0>(bin))
-                        delete [] std::get<0>(bin);
-                }while (tmp.size() > 0);
-                tmp.clear();
-                Pa_Sleep(10);
-            }
-            mic->stop();
-            speak->stop();
-            Pa_Terminate();
-        }catch (const std::exception &error){
-            std::cerr << error.what() << std::endl;
-        }
-    });
+	_call = new ReceptionCallWindow(this, std::bind(&LiveWindow::setState, this, std::placeholders::_1), this->_username);
+	_call->show();    
 }
 
 

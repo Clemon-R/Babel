@@ -23,6 +23,8 @@ private slots:
     void on_leaveBtn_clicked();
 
 private:
+	void	setState(bool);
+
     Ui::LiveWindow *ui;
     QWidget *_parent;
     QDialog *_child;
@@ -31,6 +33,7 @@ private:
     int _volumeSpeaker;
     int _volumeMicrophone;
     bool _state;
+	std::string	_username;
 };
 
 #endif // LIVEWINDOW_H
