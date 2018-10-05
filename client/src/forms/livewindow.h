@@ -26,6 +26,7 @@ private:
     Ui::LiveWindow *ui;
     QWidget *_parent;
     QDialog *_child;
+	QDialog	*_call;
 
     int _volumeSpeaker;
     int _volumeMicrophone;
