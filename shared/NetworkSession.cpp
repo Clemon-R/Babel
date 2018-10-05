@@ -72,7 +72,7 @@ void NetworkSession::onRead(const error_code &error) {
 void NetworkSession::asyncRead(sizet bytes) {
     _buffer.clear();
     _buffer.resize(bytes);
-    auto handler = boost::bind(&NetworkSession::onRead, shared_from_this(), boost::asio::placeholders::error());
+    auto handler = boost::bind(&NetworkSession::onRead, shared_from_this(), boost::asio::placeholders::error);
     boost::asio::async_read(_socket, boost::asio::buffer(_buffer), boost::asio::transfer_exactly(bytes), handler);
 }
 
@@ -102,7 +102,7 @@ void NetworkSession::asyncWrite() {
     _writer & ((header_type) next.size());
     bytes.insert(bytes.end(), next.begin(), next.end());
 
-    auto handler = boost::bind(&NetworkSession::onWritten, shared_from_this(), boost::asio::placeholders::error());
+    auto handler = boost::bind(&NetworkSession::onWritten, shared_from_this(), boost::asio::placeholders::error);
     boost::asio::async_write(_socket, boost::asio::buffer(bytes, bytes.size()), handler);
 }
 
