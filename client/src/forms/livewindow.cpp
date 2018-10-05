@@ -13,7 +13,7 @@ LiveWindow::LiveWindow(QWidget *parent, const std::string &username, unsigned ch
     LiveWindow(parent)
 {
 	this->_username = username;
-    this->setWindowTitle(this->windowTitle() + QString::fromStdString(username));
+    this->setWindowTitle(this->windowTitle().append(QString::fromStdString(username)));
 }
 
 LiveWindow::LiveWindow(QWidget *parent) :
