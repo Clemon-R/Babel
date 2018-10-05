@@ -43,7 +43,7 @@ void NetworkClientHandler::onSent(ptr<NetworkSession> session, const char *data,
 
 void NetworkClientHandler::onDisconnect(ptr<NetworkSession> session, error_code const &error) const {
     if (error)
-        printf("[client %zu]: error: %s\n", session->getId(), error.message().c_str());
+        printf("[client %zu]: reason: %s\n", session->getId(), error.message().c_str());
     printf("[client %zu]: disconnected\n", session->getId());
     _controller->onDisconnect(_server->getClients()[session->getId()].get(), error);
     _server->getClients().erase(session->getId());

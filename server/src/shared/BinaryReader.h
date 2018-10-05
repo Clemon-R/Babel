@@ -16,26 +16,15 @@ public:
     sizet tell() const;
     void reset(char const *buffer, sizet size);
 
-    std::string readUtf();
-    float readFloat();
-    double readDouble();
-    boost::int16_t readShort();
-    boost::uint16_t readUshort();
-    boost::int32_t readInt();
-    boost::uint32_t readUint();
-    boost::int64_t readLong();
-    boost::uint64_t readUlong();
-
     template<class T>
     BinaryReader &operator&(T &primitive) {
-        primitive = readType<T>();
+        readType<T>(primitive);
         return *this;
     }
 
 private:
     template<class T>
-    T readType() {
-        T value;
+    void readType(T &value) {
         auto *casted = (char *) &value;
         sizet size = sizeof(T);
 
@@ -45,7 +34,57 @@ private:
         for (sizet i=0; i < size; ++i)
             casted[i] = _buffer[_position + i];
         _position += size;
-        return value;
+    }
+
+    template<class T>
+    void readType(std::string &value) {
+        boost::uint64_t size;
+        readType(size);
+
+        if (_position + size > _size)
+            throw std::runtime_error("exceeded buffer");
+
+        value = std::string(_buffer + _position, size);
+        _position += size;
+    }
+
+    template<class T>
+    void readType(std::vector<T> &list) {
+        boost::uint64_t size;
+        readType(size);
+        sizet length = sizeof(T);
+
+        if (_position + (size * length) > _size)
+            throw std::runtime_error("exceeded buffer");
+
+        for (boost::uint64_t j=0; j < size; ++j) {
+            T value;
+            readType(value);
+            auto *casted = (char *) &value;
+
+            for (sizet i=0; i < length; ++i)
+                casted[i] = _buffer[_position + i];
+
+            list.push_back(value);
+            _position += length;
+        }
+    }
+
+    template<class T>
+    void readType(std::vector<std::string> list) {
+        boost::uint64_t size;
+        readType(size);
+
+        for (boost::uint64_t j=0; j < size; ++j) {
+            boost::uint64_t length;
+            readType(length);
+
+            if (_position + length > _size)
+                throw std::runtime_error("exceeded buffer");
+
+            list.emplace_back(_buffer + _position, length);
+            _position += length;
+        }
     }
 
 private:

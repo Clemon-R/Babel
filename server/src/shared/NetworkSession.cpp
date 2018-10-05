@@ -47,7 +47,7 @@ void NetworkSession::onRead(const error_code &error) {
             _reader.reset(&s[0], s.size());
 
             try {
-                packet_size = _reader.readUlong();
+                _reader & packet_size;
             } catch (std::exception &e) {
                 _socket.close();
                 return;
@@ -99,7 +99,7 @@ void NetworkSession::asyncWrite() {
     auto &bytes = _writer.bytes();
 
     _writer.reset();
-    _writer.writeUlong((header_type) next.size());
+    _writer & ((header_type) next.size());
     bytes.insert(bytes.end(), next.begin(), next.end());
 
     auto handler = boost::bind(&NetworkSession::onWritten, shared_from_this(), boost::asio::placeholders::error());

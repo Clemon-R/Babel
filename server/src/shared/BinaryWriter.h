@@ -18,16 +18,6 @@ public:
     sizet tell() const;
     void reset();
 
-    void writeUtf(std::string const &);
-    void writeFloat(float);
-    void writeDouble(double);
-    void writeShort(boost::int16_t);
-    void writeUshort(boost::uint16_t);
-    void writeInt(boost::int32_t);
-    void writeUint(boost::uint32_t);
-    void writeLong(boost::int64_t);
-    void writeUlong(boost::uint64_t);
-
     template<class T>
     BinaryWriter &operator&(T primitive) {
         writeType<T>(primitive);
@@ -39,6 +29,37 @@ private:
     void writeType(T value) {
         sizet size = sizeof(T);
         _buffer.insert(_buffer.begin() + _position, (char *)&value, (char *)&value + size);
+        _position += size;
+    }
+
+    template<class T>
+    void writeType(std::vector<T> list) {
+        sizet size = sizeof(T);
+
+        writeType((boost::uint64_t) list.size());
+        for (sizet i=0; i < list.size(); ++i) {
+            auto value = (char *) &list[i];
+            _buffer.insert(_buffer.begin() + _position, &value, &value + size);
+            _position += size;
+        }
+    }
+
+    template<class T>
+    void writeType(std::vector<std::string> list) {
+        writeType((boost::uint64_t) list.size());
+        for (sizet i=0; i < list.size(); ++i) {
+            writeType((boost::uint64_t) list[i].size());
+            _buffer.insert(_buffer.begin() + _position, &list.at(i)[0], &list.at(i)[0] + list.at(i).size());
+            _position += list.at(i).size();
+        }
+    }
+
+    template<class T>
+    void writeType(std::string const &value) {
+        boost::uint64_t size = value.size();
+
+        writeType(size);
+        _buffer.insert(_buffer.begin() + _position, value.c_str(), value.c_str() + size);
         _position += size;
     }
 
