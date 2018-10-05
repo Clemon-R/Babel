@@ -15,7 +15,7 @@ struct UpdateContactMessage : NetworkMessage {
     std::vector<std::string> disconnectedClients;
 
     UpdateContactMessage() : NetworkMessage(OPCODE) {}
-    UpdateContactMessage(std::vector<std::string> &&newClients_, std::vector<std::string> &&dcClients_)
+    UpdateContactMessage(std::vector<std::string> const &newClients_, std::vector<std::string> const &dcClients_)
             : NetworkMessage(OPCODE),
               newClients(newClients_),
               disconnectedClients(dcClients_)
@@ -31,7 +31,7 @@ struct UpdateContactMessage : NetworkMessage {
 
     std::ostream &dump(std::ostream &o) const override {
         return o << "UpdateContactMessage(newClients=" << util::dumpList(newClients) << ", " <<
-                "disconnectedClients=" << util::dumpList(disconnectedClients);
+                "disconnectedClients=" << util::dumpList(disconnectedClients) << ")";
     }
 };
 

@@ -3,7 +3,7 @@
 //
 
 #include "BabelController.h"
-#include "protocol/HelloConnectMessage.h"
+#include "../../protocol/HelloConnectMessage.h"
 
 void BabelController::onConnect(NetworkClient *client) {
     client->send(HelloConnectMessage());

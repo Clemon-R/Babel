@@ -6,9 +6,9 @@
 #define SERVER_SERVERCONTROLLER_H
 
 
-#include "../shared/hook/NetworkController.h"
+#include "../../../shared/hook/NetworkController.h"
 #include "BabelConnector.h"
-#include "../protocol/HelloConnectMessage.h"
+#include "../../../protocol/HelloConnectMessage.h"
 
 class ServerController : public NetworkController {
 public:

@@ -2,13 +2,13 @@
 // Created by romain on 20/09/18.
 //
 
-#include "shared/Network.h"
-#include "shared/NetworkServer.h"
-#include "shared/NetworkConnector.h"
+#include "../../shared/Network.h"
+#include "../../shared/NetworkServer.h"
+#include "../../shared/NetworkConnector.h"
 #include "BabelServer.h"
 #include "BabelController.h"
 #include "client/ServerController.h"
-#include "protocol/UpdateContactMessage.h"
+#include "../../protocol/UpdateContactMessage.h"
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 

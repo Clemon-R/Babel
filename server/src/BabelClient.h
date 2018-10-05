@@ -6,7 +6,7 @@
 #define SERVER_BABELCLIENT_H
 
 
-#include "shared/hook/NetworkClient.h"
+#include "../../shared/hook/NetworkClient.h"
 
 class BabelClient: public NetworkClient {
 public:
