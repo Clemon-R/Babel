@@ -86,5 +86,52 @@ target_link_libraries(babel_client ${CLIENT_LIBRARIES})
 
 SET(USED_LIBS ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
 
-add_executable(babel_server server/src/main.cpp shared/hook/NetworkServerHandler.h shared/hook/NetworkServerHandler.cpp shared/NetworkServer.cpp shared/NetworkServer.h shared/NetworkSession.cpp shared/NetworkSession.h shared/Network.h shared/NetworkSessionHandler.h shared/BinaryReader.cpp shared/BinaryReader.h shared/BinaryWriter.cpp shared/BinaryWriter.h shared/NetworkConnector.cpp shared/NetworkConnector.h protocol/HelloConnectMessage.h shared/hook/NetworkMessage.h shared/hook/NetworkController.h shared/hook/NetworkClient.cpp shared/hook/NetworkClient.h shared/hook/NetworkProtocol.h server/src/BabelServer.cpp server/src/BabelServer.h shared/hook/NetworkClientHandler.cpp shared/hook/NetworkClientHandler.h shared/hook/HookNetworkServer.h shared/hook/HookNetworkServer.cpp server/src/BabelController.cpp server/src/BabelController.h server/src/BabelClient.cpp server/src/BabelClient.h shared/hook/HookNetworkConnector.cpp shared/hook/HookNetworkConnector.h server/src/client/ServerController.cpp server/src/client/ServerController.h server/src/client/BabelConnector.cpp server/src/client/BabelConnector.h protocol/LoginMessage.h protocol/LoginSuccessMessage.h protocol/LoginFailedMessage.h protocol/UpdateContactMessage.h shared/Util.h protocol/CallRequestMessage.h protocol/ErrorResponseMessage.h protocol/CallRefusedMessage.h protocol/VoiceDataMessage.h)
+add_executable(babel_server 
+server/src/main.cpp 
+shared/hook/NetworkServerHandler.h 
+shared/hook/NetworkServerHandler.cpp 
+shared/NetworkServer.cpp 
+shared/NetworkServer.h 
+shared/NetworkSession.cpp 
+shared/NetworkSession.h 
+shared/Network.h 
+shared/NetworkSessionHandler.h 
+shared/BinaryReader.cpp 
+shared/BinaryReader.h 
+shared/BinaryWriter.cpp 
+shared/BinaryWriter.h 
+shared/NetworkConnector.cpp 
+shared/NetworkConnector.h 
+protocol/HelloConnectMessage.h 
+shared/hook/NetworkMessage.h 
+shared/hook/NetworkController.h 
+shared/hook/NetworkClient.cpp 
+shared/hook/NetworkClient.h 
+shared/hook/NetworkProtocol.h 
+server/src/BabelServer.cpp 
+server/src/BabelServer.h 
+shared/hook/NetworkClientHandler.cpp 
+shared/hook/NetworkClientHandler.h 
+shared/hook/HookNetworkServer.h 
+shared/hook/HookNetworkServer.cpp 
+server/src/BabelController.cpp 
+server/src/BabelController.h 
+server/src/BabelUser.cpp 
+server/src/BabelUser.h 
+shared/hook/HookNetworkConnector.cpp 
+shared/hook/HookNetworkConnector.h 
+server/src/client/ServerController.cpp 
+server/src/client/ServerController.h 
+server/src/client/BabelConnector.cpp 
+server/src/client/BabelConnector.h 
+protocol/LoginMessage.h 
+protocol/LoginSuccessMessage.h 
+protocol/LoginFailedMessage.h 
+protocol/DelContactMessage.h 
+protocol/AddContactMessage.h 
+shared/Util.h
+protocol/CallRequestMessage.h
+protocol/ErrorResponseMessage.h
+protocol/CallRefusedMessage.h
+protocol/VoiceDataMessage.h)
 target_link_libraries(babel_server ${USED_LIBS})
