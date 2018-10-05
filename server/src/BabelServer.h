@@ -6,10 +6,10 @@
 #define SERVER_BABELSERVER_H
 
 
-#include "shared/Network.h"
-#include "shared/NetworkServer.h"
-#include "shared/hook/NetworkClient.h"
-#include "shared/hook/HookNetworkServer.h"
+#include "../../shared/Network.h"
+#include "../../shared/NetworkServer.h"
+#include "../../shared/hook/NetworkClient.h"
+#include "../../shared/hook/HookNetworkServer.h"
 #include "BabelClient.h"
 
 class BabelServer: public HookNetworkServer {

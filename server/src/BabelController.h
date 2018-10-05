@@ -6,13 +6,13 @@
 #define SERVER_BABELCONTROLLER_H
 
 
-#include "shared/hook/NetworkController.h"
+#include "../../shared/hook/NetworkController.h"
 #include "BabelServer.h"
 #include "BabelClient.h"
-#include "protocol/HelloConnectMessage.h"
-#include "protocol/CallRequestMessage.h"
-#include "protocol/LoginMessage.h"
-#include "protocol/CallRefusedMessage.h"
+#include "../../protocol/HelloConnectMessage.h"
+#include "../../protocol/CallRequestMessage.h"
+#include "../../protocol/LoginMessage.h"
+#include "../../protocol/CallRefusedMessage.h"
 
 class BabelController : public NetworkController {
 public:

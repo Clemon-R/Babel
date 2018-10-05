@@ -3,7 +3,7 @@
 //
 
 #include "ServerController.h"
-#include "../protocol/HelloConnectMessage.h"
+#include "../../../protocol/HelloConnectMessage.h"
 
 void ServerController::defineMessageHandlers(handlers_t &handlers) {
     handlers[HelloConnectMessage::OPCODE] = handler(this, &ServerController::onHello);

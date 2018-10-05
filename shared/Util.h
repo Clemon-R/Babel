@@ -11,7 +11,7 @@
 
 namespace util {
     template<class T>
-    std::string dumpList(std::vector<T> const &list) {
+    inline std::string dumpList(std::vector<T> const &list) {
         sizet size = list.size();
         std::string result("{ ");
         for (sizet i=0; i < size; ++i) {
@@ -23,7 +23,7 @@ namespace util {
         return result;
     }
 
-    std::string dumpList(std::vector<std::string> const &list) {
+    inline std::string dumpList(std::vector<std::string> const &list) {
         sizet size = list.size();
         std::string result("{ ");
         for (sizet i=0; i < size; ++i) {
@@ -35,7 +35,7 @@ namespace util {
         return result;
     }
 
-    std::string dumpBinary(std::string const &binary) {
+    inline std::string dumpBinary(std::string const &binary) {
         sizet size = binary.size();
         std::string data;
 

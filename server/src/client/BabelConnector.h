@@ -6,8 +6,8 @@
 #define SERVER_BABELCONNECTOR_H
 
 
-#include "../shared/Network.h"
-#include "../shared/hook/HookNetworkConnector.h"
+#include "../../../shared/Network.h"
+#include "../../../shared/hook/HookNetworkConnector.h"
 
 class BabelConnector : public HookNetworkConnector {
 public:
