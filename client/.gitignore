@@ -1,9 +1,0 @@
-.idea
-cmake-build-debug
-build
-idea
-*.idea
-*.o
-*~
-*#
-*LokoVoice.*

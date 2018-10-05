@@ -7,7 +7,6 @@
 
 #include <boost/asio.hpp>
 #include <boost/cstdint.hpp>
-#include <experimental/optional>
 
 using sizet = boost::uintmax_t;
 using ssizet = boost::intmax_t;
