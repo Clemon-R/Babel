@@ -13,7 +13,7 @@ struct CallRefusedMessage : NetworkMessage {
     std::string pseudo;
 
     CallRefusedMessage() : NetworkMessage(OPCODE) {}
-    CallRefusedMessage(std::string &&pseudo_) : NetworkMessage(OPCODE),
+    CallRefusedMessage(std::string const &pseudo_) : NetworkMessage(OPCODE),
               pseudo(pseudo_)
     {}
 

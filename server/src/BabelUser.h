@@ -8,9 +8,9 @@
 
 #include "../../shared/hook/NetworkClient.h"
 
-class BabelClient: public NetworkClient {
+class BabelUser: public NetworkClient {
 public:
-    explicit BabelClient(ptr<NetworkSession> session);
+    explicit BabelUser(ptr<NetworkSession> session);
 
     std::string &pseudo();
 

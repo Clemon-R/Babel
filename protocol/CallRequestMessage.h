@@ -15,7 +15,7 @@ struct CallRequestMessage : NetworkMessage {
     boost::uint16_t port;
 
     CallRequestMessage() : NetworkMessage(OPCODE) {}
-    CallRequestMessage(std::string &&pseudo_, std::string &&host_, boost::uint16_t port_)
+    CallRequestMessage(std::string const &pseudo_, std::string const &host_, boost::uint16_t port_)
             : NetworkMessage(OPCODE),
               pseudo(pseudo_),
               host(host_),

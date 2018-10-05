@@ -24,6 +24,11 @@ public:
 
     virtual std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session) = 0;
 
+    template<class T>
+    T *getClient(session_id id) {
+        return dynamic_cast<T *>(_clients.at(id).get());
+    }
+
 private:
     NetworkClientHandler _handler;
     NetworkController *_controller;

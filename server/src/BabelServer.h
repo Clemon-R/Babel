@@ -10,7 +10,7 @@
 #include "../../shared/NetworkServer.h"
 #include "../../shared/hook/NetworkClient.h"
 #include "../../shared/hook/HookNetworkServer.h"
-#include "BabelClient.h"
+#include "BabelUser.h"
 
 class BabelServer: public HookNetworkServer {
 public:
@@ -18,7 +18,8 @@ public:
 
     std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session) override;
 
-    BabelClient *find(std::string const &pseudo);
+    void sendToAll(NetworkClient *sender, NetworkMessage const &msg);
+    BabelUser *find(std::string const &pseudo);
 };
 
 

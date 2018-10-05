@@ -3,20 +3,28 @@
 //
 
 #include "BabelServer.h"
-#include "BabelClient.h"
+#include "BabelUser.h"
 
 BabelServer::BabelServer(NetworkController &controller, boost::uint16_t port)
         : HookNetworkServer(controller, port)
 {}
 
 std::unique_ptr<NetworkClient> BabelServer::clientProvider(ptr<NetworkSession> session) {
-    return std::make_unique<BabelClient>(session);
+    return std::make_unique<BabelUser>(session);
 }
 
-BabelClient *BabelServer::find(std::string const &name) {
-    BabelClient *client = nullptr;
+BabelUser *BabelServer::find(std::string const &name) {
+    for (auto &client: getClients()) {
+        auto user = dynamic_cast<BabelUser *>(client.second.get());
 
-    //TODO: find client by name
+        if (user->pseudo() == name)
+            return user;
+    }
+    return nullptr;
+}
 
-    return client;
+void BabelServer::sendToAll(NetworkClient *sender, NetworkMessage const &msg) {
+    for (auto &client: getClients())
+        if (client.first != sender->getId())
+            client.second->send(msg);
 }

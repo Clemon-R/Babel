@@ -14,7 +14,8 @@
 #include "../../protocol/LoginFailedMessage.h"
 #include "../../protocol/CallRequestMessage.h"
 #include "../../protocol/ErrorResponseMessage.h"
-#include "../../protocol/UpdateContactMessage.h"
+#include "../../protocol/AddContactMessage.h"
+#include "../../protocol/DelContactMessage.h"
 #include "../../protocol/VoiceDataMessage.h"
 #include "../../protocol/CallRefusedMessage.h"
 
@@ -38,7 +39,8 @@ namespace NetworkProtocol {
                 { LoginFailedMessage::OPCODE, packet_factory<LoginFailedMessage> },
                 { CallRequestMessage::OPCODE, packet_factory<CallRequestMessage> },
                 { ErrorResponseMessage::OPCODE, packet_factory<ErrorResponseMessage> },
-                { UpdateContactMessage::OPCODE, packet_factory<UpdateContactMessage> },
+                { AddContactMessage::OPCODE, packet_factory<AddContactMessage> },
+                { DelContactMessage::OPCODE, packet_factory<DelContactMessage> },
                 { VoiceDataMessage::OPCODE, packet_factory<VoiceDataMessage> },
                 { CallRefusedMessage::OPCODE, packet_factory<CallRefusedMessage> }
         };

@@ -8,7 +8,7 @@
 
 #include "../../shared/hook/NetworkController.h"
 #include "BabelServer.h"
-#include "BabelClient.h"
+#include "BabelUser.h"
 #include "../../protocol/HelloConnectMessage.h"
 #include "../../protocol/CallRequestMessage.h"
 #include "../../protocol/LoginMessage.h"
@@ -19,10 +19,9 @@ public:
     void onConnect(NetworkClient *client) override;
     void onDisconnect(NetworkClient *client, error_code const &error) override;
 
-    void onHello(BabelClient *client, HelloConnectMessage *msg);
-    void onCallRequest(BabelClient *client, CallRequestMessage *msg);
-    void onLogin(BabelClient *client, LoginMessage *msg);
-    void onCallRefused(BabelClient *client, CallRefusedMessage *msg);
+    void onCallRequest(BabelUser *client, CallRequestMessage *msg);
+    void onLogin(BabelUser *client, LoginMessage *msg);
+    void onCallRefused(BabelUser *client, CallRefusedMessage *msg);
 
     void setServer(BabelServer &server) {
         _server = &server;
@@ -31,7 +30,6 @@ public:
 protected:
 
     void defineMessageHandlers(handlers_t &handlers) override {
-        handlers[HelloConnectMessage::OPCODE] = handler(this, &BabelController::onHello);
         handlers[CallRequestMessage::OPCODE] = handler(this, &BabelController::onCallRequest);
         handlers[HelloConnectMessage::OPCODE] = handler(this, &BabelController::onLogin);
         handlers[HelloConnectMessage::OPCODE] = handler(this, &BabelController::onCallRefused);
