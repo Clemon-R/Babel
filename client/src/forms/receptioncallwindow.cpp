@@ -8,7 +8,7 @@ ReceptionCallWindow::ReceptionCallWindow(QWidget *parent, std::function<void(boo
 {
 	ui->setupUi(this);
 
-	this->setWindowTitle(QString::fromStdString(username) + this->windowTitle());
+	this->setWindowTitle(QString::fromStdString(username).append(this->windowTitle()));
 }
 
 ReceptionCallWindow::~ReceptionCallWindow()
