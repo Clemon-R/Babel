@@ -11,6 +11,11 @@
 class BabelClient: public NetworkClient {
 public:
     explicit BabelClient(ptr<NetworkSession> session);
+
+    std::string &pseudo();
+
+private:
+    std::string _pseudo;
 };
 
 

@@ -38,8 +38,7 @@ int main(int ac, char *args[]) {
         BinaryReader reader;
         reader.reset(&writer.bytes()[0], writer.bytes().size());
         msg.deserialize(reader);
-        for (int i=0; i < msg.newClients.size(); ++i)
-            printf("%s\n", msg.newClients[i].c_str());
+        std::cout << msg;
         return 0;
     }
     BabelController controller;

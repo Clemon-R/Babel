@@ -9,6 +9,14 @@
 #include <unordered_map>
 #include <memory>
 #include "../../protocol/HelloConnectMessage.h"
+#include "../../protocol/LoginMessage.h"
+#include "../../protocol/LoginSuccessMessage.h"
+#include "../../protocol/LoginFailedMessage.h"
+#include "../../protocol/CallRequestMessage.h"
+#include "../../protocol/ErrorResponseMessage.h"
+#include "../../protocol/UpdateContactMessage.h"
+#include "../../protocol/VoiceDataMessage.h"
+#include "../../protocol/CallRefusedMessage.h"
 
 
 namespace NetworkProtocol {
@@ -24,7 +32,15 @@ namespace NetworkProtocol {
          * {key=opcode, value=packetFactory<packetType>}
          */
         const std::unordered_map<opcode, std::unique_ptr<NetworkMessage>(*)()> messages {
-                { HelloConnectMessage::OPCODE, packet_factory<HelloConnectMessage> }
+                { HelloConnectMessage::OPCODE, packet_factory<HelloConnectMessage> },
+                { LoginMessage::OPCODE, packet_factory<LoginMessage> },
+                { LoginSuccessMessage::OPCODE, packet_factory<LoginSuccessMessage> },
+                { LoginFailedMessage::OPCODE, packet_factory<LoginFailedMessage> },
+                { CallRequestMessage::OPCODE, packet_factory<CallRequestMessage> },
+                { ErrorResponseMessage::OPCODE, packet_factory<ErrorResponseMessage> },
+                { UpdateContactMessage::OPCODE, packet_factory<UpdateContactMessage> },
+                { VoiceDataMessage::OPCODE, packet_factory<VoiceDataMessage> },
+                { CallRefusedMessage::OPCODE, packet_factory<CallRefusedMessage> }
         };
     }
 

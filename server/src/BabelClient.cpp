@@ -7,3 +7,7 @@
 BabelClient::BabelClient(ptr<NetworkSession> session)
         : NetworkClient(session)
 {}
+
+std::string &BabelClient::pseudo() {
+    return _pseudo;
+}

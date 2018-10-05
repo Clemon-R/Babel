@@ -12,3 +12,11 @@ BabelServer::BabelServer(NetworkController &controller, boost::uint16_t port)
 std::unique_ptr<NetworkClient> BabelServer::clientProvider(ptr<NetworkSession> session) {
     return std::make_unique<BabelClient>(session);
 }
+
+BabelClient *BabelServer::find(std::string const &name) {
+    BabelClient *client = nullptr;
+
+    //TODO: find client by name
+
+    return client;
+}
