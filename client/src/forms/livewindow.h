@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <memory>
-#include <client/src/network/BabelConnector.h>
+#include <client/src/ClientManager.h>
 
 namespace Ui {
 class LiveWindow;
@@ -17,6 +17,18 @@ public:
     explicit LiveWindow(QWidget *parent = 0);
     LiveWindow(QWidget *parent, const std::string &username, const std::string &ip, unsigned short port);
     ~LiveWindow();
+
+    void    insertListData(const std::string &name);
+
+    void    displayConnectSuccess();
+    void    displayAuthentication();
+    void    displayAuthenticationSuccess();
+    void    displayAuthenticationFailed();
+private slots:
+    void on_contactList_doubleClicked(const QModelIndex &index);
+
+private slots:
+    void on_contactList_clicked(const QModelIndex &index);
 
 private slots:
     void on_closeBtn_clicked();
@@ -37,7 +49,7 @@ private:
     bool _state;
 	std::string	_username;
 
-	std::unique_ptr<BabelConnector>	_connector;
+	std::unique_ptr<ClientManager>	_manager;
 };
 
 #endif // LIVEWINDOW_H

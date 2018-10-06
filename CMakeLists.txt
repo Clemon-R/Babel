@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -std=c++17 -g3")
 if (UNIX) #Debug Qt on Unix
 file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qt.conf [Paths]\nPrefix=${CONAN_QT_ROOT})
 file(MAKE_DIRECTORY ${CONAN_QT_ROOT}/lib/fonts/)
-configure_file(resources/default.ttf ${CONAN_QT_ROOT}/lib/fonts/default.ttf COPYONLY)
+configure_file(client/resources/default.ttf ${CONAN_QT_ROOT}/lib/fonts/default.ttf COPYONLY)
 endif (UNIX)
 
 include_directories(
@@ -65,7 +65,7 @@ set(CLIENT_FORMS
 
 # Client Qt Resource
 set(CLIENT_RESOURCES
-	resources.qrc
+		client/resources.qrc
         )
 # Shared libraries
 set(CLIENT_LIBRARIES

@@ -94,7 +94,7 @@
    <property name="title">
     <string>Contact List</string>
    </property>
-   <widget class="QListView" name="contactList">
+   <widget class="QListWidget" name="contactList">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -103,32 +103,14 @@
       <height>481</height>
      </rect>
     </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="cursor" stdset="0">
-     <cursorShape>ArrowCursor</cursorShape>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Sunken</enum>
-    </property>
-    <property name="horizontalScrollBarPolicy">
-     <enum>Qt::ScrollBarAlwaysOff</enum>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>13</pointsize>
+     </font>
     </property>
     <property name="editTriggers">
      <set>QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked</set>
-    </property>
-    <property name="verticalScrollMode">
-     <enum>QAbstractItemView::ScrollPerPixel</enum>
-    </property>
-    <property name="horizontalScrollMode">
-     <enum>QAbstractItemView::ScrollPerPixel</enum>
     </property>
    </widget>
   </widget>

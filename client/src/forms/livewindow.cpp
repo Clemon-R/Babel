@@ -8,15 +8,17 @@
 #include "../codec/Opus.hpp"
 #include "../Exception.hpp"
 #include <thread>
-#include <client/src/network/BabelConnector.h>
+#include "client/src/network/ClientController.h"
 
 LiveWindow::LiveWindow(QWidget *parent, const std::string &username, const std::string &ip, unsigned short port) :
     LiveWindow(parent)
 {
 	this->_username = username;
     this->setWindowTitle(this->windowTitle().append(QString::fromStdString(username)));
-    _connector.reset(new BabelConnector(ip, port));
-    _connector->connect(true);
+    _manager.reset(new ClientManager(this, username));
+    if (!_manager)
+        throw Exception("livewindow: error while allocating memory");
+    _manager->connect(ip, port);
 }
 
 LiveWindow::LiveWindow(QWidget *parent) :
@@ -32,7 +34,6 @@ LiveWindow::LiveWindow(QWidget *parent) :
     ui->setupUi(this);
     QIcon icon(":/resources/icon.png");
     this->setWindowIcon(icon);
-    ui->connectBtn->setEnabled(true);
 }
 
 LiveWindow::~LiveWindow()
@@ -108,6 +109,42 @@ void LiveWindow::on_parameterBtn_clicked()
     if (!_child)
         throw Exception("livewindow: impossible to create new window");
     _child->show();
+}
+
+void LiveWindow::displayConnectSuccess() {
+	QMetaObject::invokeMethod(ui->infos, "setText", Qt::DirectConnection, Q_ARG(QString, "Connected to the server"));
+	QMetaObject::invokeMethod(ui->infos, "setStyleSheet", Qt::DirectConnection, Q_ARG(QString, "QLabel { color : green; }"));
+}
+
+void LiveWindow::displayAuthenticationSuccess() {
+	QMetaObject::invokeMethod(ui->infos, "setText", Qt::DirectConnection, Q_ARG(QString, "Authentication successfull"));
+	QMetaObject::invokeMethod(ui->infos, "setStyleSheet", Qt::DirectConnection, Q_ARG(QString, "QLabel { color : green; }"));
+}
+
+void LiveWindow::displayAuthenticationFailed() {
+	QMetaObject::invokeMethod(ui->infos, "setText", Qt::DirectConnection, Q_ARG(QString, "Authentication failed"));
+	QMetaObject::invokeMethod(ui->infos, "setStyleSheet", Qt::DirectConnection, Q_ARG(QString, "QLabel { color : red; }"));
+}
+
+void LiveWindow::displayAuthentication() {
+	QMetaObject::invokeMethod(ui->infos, "setText", Qt::DirectConnection, Q_ARG(QString, "Authentication in progress..."));
+	QMetaObject::invokeMethod(ui->infos, "setStyleSheet", Qt::DirectConnection, Q_ARG(QString, "QLabel { color : black; }"));
+}
+
+void LiveWindow::insertListData(const std::string &name) {
+    QMetaObject::invokeMethod(ui->contactList, "addItem", Qt::DirectConnection, Q_ARG(QString, QString::fromStdString(name)));
+}
+
+void LiveWindow::on_contactList_clicked(const QModelIndex &index)
+{
+	(void)index;
+	if (!ui->contactList->selectedItems().isEmpty())
+		std::cout << ui->contactList->selectedItems().at(0)->text().toStdString() << std::endl;
+}
+
+void LiveWindow::on_contactList_doubleClicked(const QModelIndex &index)
+{
+	on_contactList_clicked(index);
 }
 
 void LiveWindow::on_closeBtn_clicked()

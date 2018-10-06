@@ -45,12 +45,15 @@ void BabelController::onLogin(BabelUser *client, LoginMessage *msg) {
     std::vector<std::string> users;
     for (auto &keyset: _server->getClients()) {
         auto user = dynamic_cast<BabelUser *>(keyset.second.get());
-        users.push_back(user->pseudo());
+
+        if (user->getId() != client->getId())
+            users.push_back(user->pseudo());
     }
 
-    client->pseudo() = msg->pseudo;
+    client->pseudo() = std::string(msg->pseudo);
     client->send(LoginSuccessMessage());
-    client->send(AddContactMessage(users));
+    if (!users.empty())
+        client->send(AddContactMessage(users));
     _server->sendToAll(client, AddContactMessage(client->pseudo()));
 }
 

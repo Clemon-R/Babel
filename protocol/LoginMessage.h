@@ -13,7 +13,7 @@ struct LoginMessage : NetworkMessage {
     std::string pseudo;
 
     LoginMessage() : NetworkMessage(OPCODE) {}
-    LoginMessage(std::string &&pseudo_) : NetworkMessage(OPCODE),
+    LoginMessage(const std::string &pseudo_) : NetworkMessage(OPCODE),
               pseudo(pseudo_)
     {}
 

@@ -17,11 +17,11 @@
 #include <protocol/VoiceDataMessage.h>
 #include <protocol/CallRefusedMessage.h>
 #include <protocol/ConnectionEtablishedMessage.h>
-#include <client/src/ClientManager.h>
+class ClientManager;
 
 class ClientController : public NetworkController {
 public:
-    ClientController(ClientManager *manager) : _manager(manager) {}
+    ClientController(ClientManager *manager) : _manager(manager){};
 
     void onConnect(NetworkClient *client) override {};
     void onDisconnect(NetworkClient *client, error_code const &error) override;

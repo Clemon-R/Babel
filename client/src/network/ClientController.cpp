@@ -3,10 +3,12 @@
 //
 
 #include <protocol/LoginMessage.h>
-#include "ClientController.h"
+#include <client/src/network/ClientController.h>
+#include <client/src/ClientManager.h>
 
 void ClientController::onServerReady(NetworkClient *user, HelloConnectMessage *msg) {
-    user->send(LoginMessage("username"));
+    _manager->connectSuccess();
+    _manager->authentication();
 }
 
 void ClientController::onDisconnect(NetworkClient *client, error_code const &error) {
@@ -19,12 +21,9 @@ void ClientController::onContactReady(NetworkClient *user, ConnectionEtablishedM
 }
 
 void ClientController::onNewContact(NetworkClient *user, AddContactMessage *msg) {
-    msg->newClients; //list of strings
-
-    /** TODO:   stoquer tous les contacts (on identifie les client par leur pseudo
-     *          le pseudo est bien unique, l'utilise comme ID en gros
-     *          refresh l'uI
-     **/
+    for (const std::string &pseudo : msg->newClients){
+        _manager->addContact(pseudo);
+    }
 }
 
 void ClientController::onDisconnectedContact(NetworkClient *user, DelContactMessage *msg) {
@@ -38,12 +37,11 @@ void ClientController::onDisconnectedContact(NetworkClient *user, DelContactMess
 }
 
 void ClientController::onLoginFailed(NetworkClient *user, LoginFailedMessage *msg) {
-    msg->reason;
-    //TODO: pseudo déjà utilisé
+    _manager->authenticationFailed();
 }
 
 void ClientController::onLoginSuccess(NetworkClient *user, LoginSuccessMessage *msg) {
-    //TODO: login accepté, tu peux le mettre sur la page de contacts
+    _manager->authenticationSuccess();
 }
 
 void ClientController::onServerError(NetworkClient *user, ErrorResponseMessage *msg) {

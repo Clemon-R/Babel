@@ -44,8 +44,6 @@ std::tuple<unsigned char *, int>    Opus::encode(const std::vector<SAMPLE> &valu
     for (const SAMPLE value : values)
         in[i++] = value;
     nbBytes = opus_encode_float(_encoder, in, SAMPLE_SIZE, result, MAX_PACKET_SIZE);
-    if (nbBytes <= 0)
-        throw Exception("opus: error while encoding");
 	delete[] in;
     std::cout << "opus: nbr of bytes - " << nbBytes << std::endl;
     return (std::tuple<unsigned char *, int>(result, nbBytes));
