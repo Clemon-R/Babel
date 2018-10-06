@@ -71,7 +71,7 @@ private:
     }
 
     template<class T>
-    void readType(std::vector<std::string> list) {
+    void readType(std::vector<std::string> &list) {
         boost::uint64_t size;
         readType(size);
 
