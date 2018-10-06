@@ -42,7 +42,7 @@ void NetworkServerHandler::onSent(ptr<NetworkSession> session, const char *data,
 
 void NetworkServerHandler::onDisconnect(ptr<NetworkSession> session, error_code const &error) const {
     if (error)
-        printf("[network]: reason: %s\n", error.message().c_str());
+        printf("[network]: socket closed, reason: %s\n", error.message().c_str());
     printf("[network]: disconnected\n");
     _controller->onDisconnect(_connector->getClient(), error);
 }
