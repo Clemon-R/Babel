@@ -31,7 +31,6 @@ void BabelController::onCallRequest(BabelUser *client, CallRequestMessage *msg) 
 }
 
 void BabelController::onLogin(BabelUser *client, LoginMessage *msg) {
-    std::cout << _server->getClients().size() << std::endl;
     BabelUser *exist = _server->find(msg->pseudo);
 
     if (exist == nullptr) {

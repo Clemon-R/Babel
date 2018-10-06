@@ -86,12 +86,14 @@ tcp::socket &NetworkSession::getSocket() {
 
 void NetworkSession::send(char const *bytes, sizet length) {
     _pending.emplace_back(bytes, bytes + length);
-    asyncWrite();
+    if (_pending.empty())
+        asyncWrite();
 }
 
 void NetworkSession::send(std::vector<char> const &bytes) {
     _pending.push_back(bytes);
-    asyncWrite();
+    if (_pending.empty())
+        asyncWrite();
 }
 
 void NetworkSession::asyncWrite() {
