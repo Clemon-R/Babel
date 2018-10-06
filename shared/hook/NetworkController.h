@@ -39,7 +39,7 @@ protected:
 
     template <typename T,typename V,typename X>
     handler_t handler(T *holder, typed_handler_t<T, V, X> addr) {
-        return [&holder, addr](NetworkClient *client, NetworkMessage *msg) mutable {
+        return [holder, addr](NetworkClient *client, NetworkMessage *msg) mutable {
             (*holder.*addr)(dynamic_cast<X *>(client), dynamic_cast<V *>(msg));
         };
     };
