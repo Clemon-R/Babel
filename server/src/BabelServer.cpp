@@ -14,8 +14,9 @@ std::unique_ptr<NetworkClient> BabelServer::clientProvider(ptr<NetworkSession> s
 }
 
 BabelUser *BabelServer::find(std::string const &name) {
+    std::cout << "test" << std::endl;
     for (auto &client: getClients()) {
-        auto user = dynamic_cast<BabelUser *>(client.second.get());
+        auto *user = dynamic_cast<BabelUser *>(client.second.get());
 
         if (user->pseudo() == name)
             return user;

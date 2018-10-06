@@ -8,12 +8,15 @@
 #include "../codec/Opus.hpp"
 #include "../Exception.hpp"
 #include <thread>
+#include <client/src/network/BabelConnector.h>
 
-LiveWindow::LiveWindow(QWidget *parent, const std::string &username, unsigned char *ip, unsigned short port) :
+LiveWindow::LiveWindow(QWidget *parent, const std::string &username, const std::string &ip, unsigned short port) :
     LiveWindow(parent)
 {
 	this->_username = username;
     this->setWindowTitle(this->windowTitle().append(QString::fromStdString(username)));
+    _connector.reset(new BabelConnector(ip, port));
+    _connector->connect(true);
 }
 
 LiveWindow::LiveWindow(QWidget *parent) :
@@ -21,10 +24,10 @@ LiveWindow::LiveWindow(QWidget *parent) :
     ui(new Ui::LiveWindow),
     _parent(parent),
     _child(nullptr),
+    _call(nullptr),
     _volumeSpeaker(100),
     _volumeMicrophone(100),
-    _state(false),
-	_call(nullptr)
+    _state(false)
 {
     ui->setupUi(this);
     QIcon icon(":/resources/icon.png");

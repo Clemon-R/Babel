@@ -32,21 +32,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_Login_clicked()
 {
-    std::regex  r_adress("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
-    std::smatch m_adress;
-    std::string adress = ui->serverAdress->text().toUtf8().constData();
-    unsigned char   ip[4];
     QWidget *newWindow = nullptr;
 
-    if (std::regex_search(adress, m_adress, r_adress)){
-        ip[0] = std::atoi(m_adress[1].str().c_str());
-        ip[1] = std::atoi(m_adress[2].str().c_str());
-        ip[2] = std::atoi(m_adress[3].str().c_str());
-        ip[3] = std::atoi(m_adress[4].str().c_str());
-    }
     newWindow = new LiveWindow(this
             , std::string(ui->username->text().toUtf8().constData())
-            , ip
+            , ui->serverAdress->text().toUtf8().constData()
             , std::atoi(ui->serverPort->text().toUtf8().constData()));
     if (!newWindow)
         throw Exception("mainwindow: impossible to open new window");

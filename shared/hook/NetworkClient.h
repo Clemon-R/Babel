@@ -13,6 +13,7 @@
 class NetworkClient {
 public:
     explicit NetworkClient(ptr<NetworkSession> session);
+    ~NetworkClient() {}
 
     virtual void send(NetworkMessage const &message);
     virtual std::unique_ptr<NetworkMessage> read(char const *bytes, sizet length);

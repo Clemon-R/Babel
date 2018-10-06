@@ -14,7 +14,7 @@
 
 class BabelServer: public HookNetworkServer {
 public:
-    explicit BabelServer(NetworkController &controller, boost::uint16_t port = RANDOM_PORT);
+    BabelServer(NetworkController &controller, boost::uint16_t port = RANDOM_PORT);
 
     std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session) override;
 

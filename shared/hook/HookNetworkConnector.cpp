@@ -25,7 +25,7 @@ void HookNetworkConnector::setClient(std::unique_ptr<NetworkClient> instance) {
 }
 
 std::unique_ptr<NetworkClient> HookNetworkConnector::clientProvider(ptr<NetworkSession> session) {
-    return std::make_unique<NetworkClient>(session);
+    return std::unique_ptr<NetworkClient>(new NetworkClient(session));
 }
 
 void HookNetworkConnector::connect(bool useThread) {

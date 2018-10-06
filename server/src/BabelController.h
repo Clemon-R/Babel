@@ -31,8 +31,8 @@ protected:
 
     void defineMessageHandlers(handlers_t &handlers) override {
         handlers[CallRequestMessage::OPCODE] = handler(this, &BabelController::onCallRequest);
-        handlers[HelloConnectMessage::OPCODE] = handler(this, &BabelController::onLogin);
-        handlers[HelloConnectMessage::OPCODE] = handler(this, &BabelController::onCallRefused);
+        handlers[LoginMessage::OPCODE] = handler(this, &BabelController::onLogin);
+        handlers[CallRefusedMessage::OPCODE] = handler(this, &BabelController::onCallRefused);
     }
 
 private:

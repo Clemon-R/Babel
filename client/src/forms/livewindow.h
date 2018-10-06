@@ -2,6 +2,8 @@
 #define LIVEWINDOW_H
 
 #include <QWidget>
+#include <memory>
+#include <client/src/network/BabelConnector.h>
 
 namespace Ui {
 class LiveWindow;
@@ -13,7 +15,7 @@ class LiveWindow : public QWidget
 
 public:
     explicit LiveWindow(QWidget *parent = 0);
-    LiveWindow(QWidget *parent, const std::string &username, unsigned char *ip, unsigned short port);
+    LiveWindow(QWidget *parent, const std::string &username, const std::string &ip, unsigned short port);
     ~LiveWindow();
 
 private slots:
@@ -34,6 +36,8 @@ private:
     int _volumeMicrophone;
     bool _state;
 	std::string	_username;
+
+	std::unique_ptr<BabelConnector>	_connector;
 };
 
 #endif // LIVEWINDOW_H
