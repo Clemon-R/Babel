@@ -3,3 +3,10 @@
 //
 
 #include "ClientManager.h"
+
+ClientManager::ClientManager()
+        : _controller(this),
+          _connector(_controller),
+          _server(_controller),
+          _locker()
+{}

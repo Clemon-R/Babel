@@ -11,9 +11,9 @@ HookNetworkServer::HookNetworkServer(NetworkController &controller, uint16_t por
           _clients()
 {}
 
-void HookNetworkServer::run() {
+void HookNetworkServer::run(bool useThread) {
     _controller->init();
-    NetworkServer::run();
+    NetworkServer::run(useThread);
 }
 
 clients_t &HookNetworkServer::getClients() {

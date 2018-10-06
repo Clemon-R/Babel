@@ -7,15 +7,20 @@
 
 
 #include <shared/hook/HookNetworkConnector.h>
+#include <client/src/network/ClientController.h>
+#include <shared/hook/HookNetworkServer.h>
 
 class ClientManager {
 public:
+    ClientManager();
 
+    void
 
 private:
-
+    ClientController _controller;
     HookNetworkConnector _connector;
-    std::mutex locker;
+    HookNetworkServer _server;
+    std::mutex _locker;
 };
 
 

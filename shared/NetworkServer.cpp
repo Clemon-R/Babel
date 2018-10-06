@@ -15,9 +15,13 @@ NetworkServer::NetworkServer(NetworkSessionHandler *handler, boost::uint16_t por
     _acceptor.set_option(option);
 }
 
-void NetworkServer::run() {
+void NetworkServer::run(bool useThread) {
     asyncAccept();
-    _io.run();
+
+    if (!useThread)
+        _io.run();
+    else
+        _thread = boost::thread(boost::bind(&boost::asio::io_service::run, &_io));
 }
 
 boost::uint16_t NetworkServer::getPort() const {
@@ -38,4 +42,8 @@ void NetworkServer::onAccept(ptr<NetworkSession> session, const error_code &erro
         session->asyncAwaitPacket();
     }
     asyncAccept();
+}
+
+boost::thread &NetworkServer::getThread() {
+    return _thread;
 }

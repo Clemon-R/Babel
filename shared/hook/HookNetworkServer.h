@@ -19,7 +19,7 @@ public:
     explicit HookNetworkServer(NetworkController &controller, boost::uint16_t port = RANDOM_PORT);
     virtual ~HookNetworkServer() {}
 
-    void run() override;
+    void run(bool useThread = false) override;
     clients_t &getClients();
 
     virtual std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session) = 0;

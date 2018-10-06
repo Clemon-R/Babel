@@ -10,6 +10,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 #include <unordered_map>
+#include <boost/thread.hpp>
 #include "NetworkSession.h"
 #include "Network.h"
 #include "NetworkSessionHandler.h"
@@ -22,8 +23,9 @@ public:
 
     explicit NetworkServer(NetworkSessionHandler *handler, boost::uint16_t port = RANDOM_PORT);
 
-    virtual void run();
+    virtual void run(bool useThread);
     boost::uint16_t getPort() const;
+    boost::thread &getThread();
 
 private:
     void asyncAccept();
@@ -33,6 +35,7 @@ private:
     boost_io _io;
     tcp::acceptor _acceptor;
     NetworkSessionHandler *_handler;
+    boost::thread _thread;
 };
 
 

@@ -17,9 +17,12 @@
 #include <protocol/VoiceDataMessage.h>
 #include <protocol/CallRefusedMessage.h>
 #include <protocol/ConnectionEtablishedMessage.h>
+#include <client/src/ClientManager.h>
 
 class ClientController : public NetworkController {
 public:
+    ClientController(ClientManager *manager) : _manager(manager) {}
+
     void onConnect(NetworkClient *client) override {};
     void onDisconnect(NetworkClient *client, error_code const &error) override;
 
@@ -49,6 +52,9 @@ private:
     void onCallRefused(NetworkClient *user, CallRefusedMessage *msg);
     void onContactReady(NetworkClient *user, ConnectionEtablishedMessage *msg);
     void onVoiceDataReceived(NetworkClient *user, VoiceDataMessage *msg);
+
+private:
+    ClientManager *_manager;
 };
 
 
