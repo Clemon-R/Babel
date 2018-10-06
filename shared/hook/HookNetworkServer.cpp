@@ -19,3 +19,7 @@ void HookNetworkServer::run(bool useThread) {
 clients_t &HookNetworkServer::getClients() {
     return _clients;
 }
+
+std::unique_ptr<NetworkClient> HookNetworkServer::clientProvider(ptr<NetworkSession> session) {
+    return std::unique_ptr<NetworkClient>(new NetworkClient(session));
+}

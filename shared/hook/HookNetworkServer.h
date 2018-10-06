@@ -22,7 +22,7 @@ public:
     void run(bool useThread = false) override;
     clients_t &getClients();
 
-    virtual std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session) = 0;
+    virtual std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session);
 
     template<class T>
     T *getClient(session_id id) {
