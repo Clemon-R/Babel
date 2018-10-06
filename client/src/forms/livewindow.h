@@ -25,10 +25,9 @@ public:
     void    displayAuthenticationSuccess();
     void    displayAuthenticationFailed();
 private slots:
-    void on_contactList_doubleClicked(const QModelIndex &index);
-
-private slots:
-    void on_contactList_clicked(const QModelIndex &index);
+    void    on_contactList_doubleClicked(const QModelIndex &index);
+    void    on_contactList_clicked(const QModelIndex &index);
+    void    addItemList(const QString &name);
 
 private slots:
     void on_closeBtn_clicked();

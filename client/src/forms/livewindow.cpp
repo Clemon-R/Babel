@@ -132,14 +132,15 @@ void LiveWindow::displayAuthentication() {
 }
 
 void LiveWindow::insertListData(const std::string &name) {
-    QMetaObject::invokeMethod(ui->contactList, "addItem", Qt::DirectConnection, Q_ARG(QString, QString::fromStdString(name)));
+    QMetaObject::invokeMethod(this, "addItemList", Qt::DirectConnection, Q_ARG(QString, QString::fromStdString(name)));
 }
 
 void LiveWindow::on_contactList_clicked(const QModelIndex &index)
 {
 	(void)index;
 	if (!ui->contactList->selectedItems().isEmpty())
-		std::cout << ui->contactList->selectedItems().at(0)->text().toStdString() << std::endl;
+		ui->connectBtn->setEnabled(true);
+		//std::cout << ui->contactList->selectedItems().at(0)->text().toStdString() << std::endl;
 }
 
 void LiveWindow::on_contactList_doubleClicked(const QModelIndex &index)
@@ -152,4 +153,8 @@ void LiveWindow::on_closeBtn_clicked()
     ui->closeBtn->setEnabled(false);
     ui->connectBtn->setEnabled(true);
     _state = false;
+}
+
+void LiveWindow::addItemList(const QString &name) {
+	ui->contactList->addItem(name);
 }
