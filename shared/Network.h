@@ -20,6 +20,6 @@ using error_code = boost::system::error_code;
 using boost_io = boost::asio::io_service;
 using boost::asio::ip::tcp;
 using header_type = boost::uint64_t;
-using locker = std::lock_guard<std::mutex>;
+using lock_t = std::lock_guard<std::mutex>;
 
 #endif //SERVER_NETWORK_H

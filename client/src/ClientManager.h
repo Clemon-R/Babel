@@ -14,13 +14,20 @@ class ClientManager {
 public:
     ClientManager();
 
-    void
+    void startHost();
+    boost::uint16_t getPort();
+    void connect(std::string const &host, uint16_t port);
+    void addContact(std::string const &contact);
+    void delContact(std::string const &contact);
+    void send(NetworkMessage const &message);
 
 private:
     ClientController _controller;
     HookNetworkConnector _connector;
     HookNetworkServer _server;
     std::mutex _locker;
+
+    std::vector<std::string> _contacts;
 };
 
 

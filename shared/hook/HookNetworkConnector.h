@@ -17,8 +17,8 @@ public:
     NetworkClient *getClient();
     void setClient(std::unique_ptr<NetworkClient> instance);
 
-    void connect(std::string const &host, std::string const &port, bool useThread) override;
-    void connect(std::string const &host, boost::uint16_t port, bool useThread) override;
+    void connect(std::string const &host, std::string const &port, bool useThread = false) override;
+    void connect(std::string const &host, boost::uint16_t port, bool useThread = false) override;
 
     virtual std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session);
 
