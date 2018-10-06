@@ -36,7 +36,7 @@ void BabelController::onCallRequest(BabelUser *client, CallRequestMessage *msg) 
 void BabelController::onLogin(BabelUser *client, LoginMessage *msg) {
     BabelUser *exist = _server->find(msg->pseudo);
 
-    if (exist == nullptr) {
+    if (exist) {
         client->send(LoginFailedMessage("username already used"));
         return;
     } else if (!client->pseudo().empty()) //avoid renaming by client hackers ;p
