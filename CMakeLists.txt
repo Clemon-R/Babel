@@ -39,8 +39,7 @@ set(CLIENT_SOURCES
 	client/src/forms/livewindow.cpp
 	client/src/forms/soundmanagerwindow.cpp
     client/src/forms/receptioncallwindow.cpp
-    client/src/network/BabelConnector.cpp
-    client/src/network/ClientController.cpp
+        client/src/network/ClientController.cpp
         )
 
 # Client C++ headers
@@ -54,8 +53,7 @@ set(CLIENT_HEADERS
 	client/src/forms/livewindow.h
 	client/src/forms/soundmanagerwindow.h
 	client/src/forms/receptioncallwindow.h
-    client/src/network/BabelConnector.h
-    client/src/network/ClientController.h)
+        client/src/network/ClientController.h)
 
 # Client Qt Interface
 set(CLIENT_FORMS
@@ -113,7 +111,7 @@ set(SHARED_FILES
 	protocol/CallRefusedMessage.h
 	protocol/VoiceDataMessage.h
 	protocol/HelloConnectMessage.h
-)
+		protocol/ConnectionEtablishedMessage.h)
 
 # Client convert .ui
 qt5_wrap_ui(UIC_SOURCES ${CLIENT_FORMS})

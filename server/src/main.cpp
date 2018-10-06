@@ -9,6 +9,7 @@
 #include "BabelController.h"
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
+#include <boost/thread.hpp>
 
 int main(int ac, char *args[]) {
     BabelController controller;

@@ -2,6 +2,7 @@
 // Created by romain on 20/09/18.
 //
 
+#include <iostream>
 #include "NetworkServer.h"
 #include "NetworkSession.h"
 
@@ -9,7 +10,10 @@ NetworkServer::NetworkServer(NetworkSessionHandler *handler, boost::uint16_t por
         : _io(),
           _acceptor(_io, tcp::endpoint(tcp::v4(), port)),
           _handler(handler)
-{}
+{
+    boost::asio::socket_base::reuse_address option(true);
+    _acceptor.set_option(option);
+}
 
 void NetworkServer::run() {
     asyncAccept();

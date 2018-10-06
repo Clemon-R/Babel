@@ -27,7 +27,10 @@ void BabelController::onCallRequest(BabelUser *client, CallRequestMessage *msg) 
         client->send(ErrorResponseMessage("requested username not found"));
         return;
     }
-    called->send(CallRequestMessage(client->pseudo(), msg->host, msg->port));
+
+    std::string hostIp = client->getSession()->getSocket().remote_endpoint().address().to_string();
+
+    called->send(CallRequestMessage(client->pseudo(), hostIp, msg->port));
 }
 
 void BabelController::onLogin(BabelUser *client, LoginMessage *msg) {
@@ -36,7 +39,8 @@ void BabelController::onLogin(BabelUser *client, LoginMessage *msg) {
     if (exist == nullptr) {
         client->send(LoginFailedMessage("username already used"));
         return;
-    }
+    } else if (!client->pseudo().empty()) //avoid renaming by client hackers ;p
+        return;
 
     std::vector<std::string> users;
     for (auto &keyset: _server->getClients()) {

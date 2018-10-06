@@ -46,6 +46,18 @@ namespace util {
         }
         return data;
     }
+
+    inline std::string dumpBinary(std::vector<char> const &binary) {
+        sizet size = binary.size();
+        std::string data;
+
+        for (sizet i=0; i < size; ++i) {
+            data += std::to_string(binary[i]);
+            if (i != size - 1)
+                data += "|";
+        }
+        return data;
+    }
 }
 
 #endif //SERVER_UTIL_H

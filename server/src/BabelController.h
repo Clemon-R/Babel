@@ -19,21 +19,21 @@ public:
     void onConnect(NetworkClient *client) override;
     void onDisconnect(NetworkClient *client, error_code const &error) override;
 
-    void onCallRequest(BabelUser *client, CallRequestMessage *msg);
-    void onLogin(BabelUser *client, LoginMessage *msg);
-    void onCallRefused(BabelUser *client, CallRefusedMessage *msg);
-
     void setServer(BabelServer &server) {
         _server = &server;
     }
 
 protected:
-
     void defineMessageHandlers(handlers_t &handlers) override {
         handlers[CallRequestMessage::OPCODE] = handler(this, &BabelController::onCallRequest);
         handlers[LoginMessage::OPCODE] = handler(this, &BabelController::onLogin);
         handlers[CallRefusedMessage::OPCODE] = handler(this, &BabelController::onCallRefused);
     }
+
+private:
+    void onCallRequest(BabelUser *client, CallRequestMessage *msg);
+    void onLogin(BabelUser *client, LoginMessage *msg);
+    void onCallRefused(BabelUser *client, CallRefusedMessage *msg);
 
 private:
     BabelServer *_server;

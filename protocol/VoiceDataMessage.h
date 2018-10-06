@@ -11,15 +11,15 @@
 struct VoiceDataMessage : NetworkMessage {
     static opcode constexpr OPCODE = 8;
 
-    std::string data;
+    std::vector<char> data;
 
     VoiceDataMessage() : NetworkMessage(OPCODE) {}
-    VoiceDataMessage(std::string &&data_) : NetworkMessage(OPCODE),
-                                           data(data_)
+    VoiceDataMessage(std::string const &data_) : NetworkMessage(OPCODE),
+                                           data(&data_[0], &data_[0] + data_.size())
     {}
     VoiceDataMessage(std::vector<char> const &data_)
             : NetworkMessage(OPCODE),
-              data(&data_[0], data_.size())
+              data(data_)
     {}
 
     void serialize(BinaryWriter &writer) const override {

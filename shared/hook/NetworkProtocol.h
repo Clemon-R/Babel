@@ -8,6 +8,7 @@
 
 #include <unordered_map>
 #include <memory>
+#include <protocol/ConnectionEtablishedMessage.h>
 #include "../../protocol/HelloConnectMessage.h"
 #include "../../protocol/LoginMessage.h"
 #include "../../protocol/LoginSuccessMessage.h"
@@ -42,7 +43,8 @@ namespace NetworkProtocol {
                 { AddContactMessage::OPCODE, packet_factory<AddContactMessage> },
                 { DelContactMessage::OPCODE, packet_factory<DelContactMessage> },
                 { VoiceDataMessage::OPCODE, packet_factory<VoiceDataMessage> },
-                { CallRefusedMessage::OPCODE, packet_factory<CallRefusedMessage> }
+                { CallRefusedMessage::OPCODE, packet_factory<CallRefusedMessage> },
+                { ConnectionEtablishedMessage::OPCODE, packet_factory<ConnectionEtablishedMessage> }
         };
     }
 

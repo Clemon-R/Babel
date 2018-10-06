@@ -21,6 +21,12 @@ struct CallRequestMessage : NetworkMessage {
               host(host_),
               port(port_)
     {}
+    CallRequestMessage(std::string const &pseudo_, boost::uint16_t port_)
+            : NetworkMessage(OPCODE),
+              pseudo(pseudo_),
+              host(),
+              port(port_)
+    {}
 
     void serialize(BinaryWriter &writer) const override {
         writer & pseudo & host & port;
