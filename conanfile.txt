@@ -2,7 +2,7 @@
 cmake
 txt
 [requires]
-boost/1.68.0@conan/stable
+boost_asio/1.66.0@bincrafters/stable
 portaudio/v190600.20161030@bincrafters/stable
 opus/1.2.1@bincrafters/stable
 Qt/5.11.2@bincrafters/stable

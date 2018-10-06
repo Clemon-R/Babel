@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 3.10)
 project(babel CXX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+conan_basic_setup(TARGETS)
+INCLUDE_DIRECTORIES(${CONAN_INCLUDE_DIRS})
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
-add_definitions(-DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK -DBOOST_LOG_DYN_LINK)
+#add_definitions(-DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK -DBOOST_LOG_DYN_LINK)
 
 if (UNIX) #Debug Qt on Unix
 file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qt.conf [Paths]\nPrefix=${CONAN_QT_ROOT})
@@ -22,11 +23,11 @@ include_directories(
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
-find_package(Boost 1.68.0 REQUIRED system thread regex)
-IF(Boost_FOUND)
-  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-ENDIF(Boost_FOUND)
+#find_package(Boost 1.68.0 REQUIRED system thread regex)
+#IF(Boost_FOUND)
+#  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+#  LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+#ENDIF(Boost_FOUND)*/
 
 # Client C++ Sources
 set(CLIENT_SOURCES
@@ -81,7 +82,7 @@ qt5_add_resources(RCC_SOURCES ${CLIENT_RESOURCES})
 # Client compilation
 add_executable(babel_client ${CLIENT_RESOURCES} ${CLIENT_SOURCES} ${CLIENT_HEADERS} ${UIC_SOURCES} ${RCC_SOURCES})
 
-target_link_libraries(babel_client ${CONAN_LIBS})
+target_link_libraries(babel_client CONAN_PKG::portaudio CONAN_PKG::opus CONAN_PKG::Qt)
 target_link_libraries(babel_client ${CLIENT_LIBRARIES})
 
 SET(USED_LIBS ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY} ${Boost_REGEX_LIBRARY})
@@ -134,4 +135,4 @@ protocol/CallRequestMessage.h
 protocol/ErrorResponseMessage.h
 protocol/CallRefusedMessage.h
 protocol/VoiceDataMessage.h)
-target_link_libraries(babel_server ${USED_LIBS})
+target_link_libraries(babel_server CONAN_PKG::boost_asio)
