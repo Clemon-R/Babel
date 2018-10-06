@@ -6,28 +6,22 @@
 #include "NetworkSession.h"
 #include <boost/bind.hpp>
 
-NetworkConnector::NetworkConnector(std::string const &host, boost::uint16_t port, NetworkSessionHandler *handler)
+NetworkConnector::NetworkConnector(NetworkSessionHandler *handler)
         : _io(),
-          _resolver(_io),
-          _query(host, std::to_string(port)),
-          _endpoint(_resolver.resolve(_query)),
           _handler(handler),
           _session(),
           _thread()
 {}
 
-NetworkConnector::NetworkConnector(std::string const &host, std::string const &port, NetworkSessionHandler *handler)
-        : _io(),
-          _resolver(_io),
-          _query(host, port),
-          _endpoint(_resolver.resolve(_query)),
-          _handler(handler),
-          _session(),
-          _thread()
-{}
+void NetworkConnector::connect(std::string const &host, std::string const &port, bool useThread) {
+    _session = NetworkSession::create(_io, *_handler);
 
-void NetworkConnector::connect(bool useThread) {
-    start();
+    tcp::resolver resolver(_io);
+    tcp::resolver::query query(host, port);
+    tcp::resolver::iterator endpoint(resolver.resolve(query));
+
+    auto handler = boost::bind(&NetworkConnector::onConnect, this, boost::asio::placeholders::error);
+    boost::asio::async_connect(_session->getSocket(), endpoint, handler);
 
     if (useThread)
         _thread = boost::thread(boost::bind(&boost::asio::io_service::run, &_io));
@@ -35,12 +29,10 @@ void NetworkConnector::connect(bool useThread) {
         _io.run();
 }
 
-void NetworkConnector::start() {
-    _session = NetworkSession::create(_io, *_handler);
-
-    auto handler = boost::bind(&NetworkConnector::onConnect, this, boost::asio::placeholders::error);
-    boost::asio::async_connect(_session->getSocket(), _endpoint, handler);
+void NetworkConnector::connect(std::string const &host, boost::uint16_t port, bool useThread) {
+    connect(host, std::to_string(port), useThread);
 }
+
 
 void NetworkConnector::onConnect(error_code const &error) {
     if (error)

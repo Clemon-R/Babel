@@ -12,13 +12,14 @@
 
 class HookNetworkConnector : public NetworkConnector {
 public:
-    HookNetworkConnector(std::string const &host, boost::uint16_t port, NetworkController &controller);
-    HookNetworkConnector(std::string const &host, std::string const &port, NetworkController &controller);
+    HookNetworkConnector(NetworkController &controller);
 
     NetworkClient *getClient();
     void setClient(std::unique_ptr<NetworkClient> instance);
 
-    void connect(bool useThread = false) override;
+    void connect(std::string const &host, std::string const &port, bool useThread) override;
+    void connect(std::string const &host, boost::uint16_t port, bool useThread) override;
+
     virtual std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session);
 
 private:

@@ -40,7 +40,7 @@ set(CLIENT_SOURCES
 	client/src/forms/soundmanagerwindow.cpp
     client/src/forms/receptioncallwindow.cpp
         client/src/network/ClientController.cpp
-        )
+		client/src/ClientManager.cpp)
 
 # Client C++ headers
 set(CLIENT_HEADERS
@@ -53,7 +53,7 @@ set(CLIENT_HEADERS
 	client/src/forms/livewindow.h
 	client/src/forms/soundmanagerwindow.h
 	client/src/forms/receptioncallwindow.h
-        client/src/network/ClientController.h)
+        client/src/network/ClientController.h client/src/ClientManager.h)
 
 # Client Qt Interface
 set(CLIENT_FORMS

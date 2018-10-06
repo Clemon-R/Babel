@@ -12,22 +12,19 @@
 
 class NetworkConnector {
 public:
-    NetworkConnector(std::string const &host, boost::uint16_t port, NetworkSessionHandler *handler);
-    NetworkConnector(std::string const &host, std::string const &port, NetworkSessionHandler *handler);
+    NetworkConnector(NetworkSessionHandler *handler);
 
-    virtual void connect(bool useThread = false);
+    virtual void connect(std::string const &host, std::string const &port, bool useThread);
+    virtual void connect(std::string const &host, boost::uint16_t port, bool useThread);
+
     boost::thread &getThread();
     ptr<NetworkSession> &getSession();
 
 private:
-    virtual void start();
     void onConnect(error_code const &error);
 
 private:
     boost_io _io;
-    tcp::resolver _resolver;
-    tcp::resolver::query _query;
-    tcp::resolver::iterator _endpoint;
     NetworkSessionHandler *_handler;
     ptr<NetworkSession> _session;
     boost::thread _thread;

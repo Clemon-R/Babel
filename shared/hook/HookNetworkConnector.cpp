@@ -4,14 +4,9 @@
 
 #include "HookNetworkConnector.h"
 
-HookNetworkConnector::HookNetworkConnector(std::string const &host, boost::uint16_t port, NetworkController &controller)
-        : NetworkConnector(host, port, &_handler),
-          _handler(controller, *this),
-          _controller(&controller)
-{}
-
-HookNetworkConnector::HookNetworkConnector(std::string const &host, std::string const &port, NetworkController &controller)
-        : NetworkConnector(host, port, &_handler),
+HookNetworkConnector::HookNetworkConnector(NetworkController &controller)
+        : NetworkConnector(&_handler),
+          _client(),
           _handler(controller, *this),
           _controller(&controller)
 {}
@@ -28,7 +23,12 @@ std::unique_ptr<NetworkClient> HookNetworkConnector::clientProvider(ptr<NetworkS
     return std::unique_ptr<NetworkClient>(new NetworkClient(session));
 }
 
-void HookNetworkConnector::connect(bool useThread) {
+void HookNetworkConnector::connect(std::string const &host, std::string const &port, bool useThread) {
     _controller->init();
-    NetworkConnector::connect(useThread);
+    NetworkConnector::connect(host, port, useThread);
+}
+
+void HookNetworkConnector::connect(std::string const &host, boost::uint16_t port, bool useThread) {
+    _controller->init();
+    NetworkConnector::connect(host, port, useThread);
 }
