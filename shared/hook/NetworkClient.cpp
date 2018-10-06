@@ -13,6 +13,7 @@ NetworkClient::NetworkClient(ptr<NetworkSession> session)
 
 
 void NetworkClient::send(NetworkMessage const &message) {
+    _writer.reset();
     NetworkProtocol::serialize(message, _writer);
     _session->send(_writer.bytes());
 }
