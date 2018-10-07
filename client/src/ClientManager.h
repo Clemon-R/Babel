@@ -36,6 +36,7 @@ public:
     void    endOfCall();
     void    sendToServer(NetworkMessage const &message);
     void    sendToContact(NetworkMessage const &message);
+    void    addSampleAudio(const std::vector<unsigned char> &samples);
 
     std::vector<std::string> const &getContacts() const;
     bool    getImHost() const;
@@ -53,6 +54,7 @@ private:
     HookNetworkConnector _hostConnector;
     HookNetworkServer _server;
     std::mutex _locker;
+    std::mutex _lockerSpeaker;
     LiveWindow *_ui;
 
     std::string _username;
@@ -62,6 +64,7 @@ private:
     bool _isCalling;
     int &_volumeSpeaker;
     int &_volumeMicrophone;
+    std::deque<std::vector<unsigned char>> _listSamples;
 };
 
 

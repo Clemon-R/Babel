@@ -24,8 +24,8 @@ public:
     session_id getId() const;
     tcp::socket &getSocket();
 
-    void send(char const *bytes, sizet length);
-    void send(std::vector<char> const &bytes);
+    void send(char const *bytes, sizet length, bool safe);
+    void send(std::vector<char> const &bytes, bool safe);
 
 private:
     NetworkSession(session_id id, boost_io &io, NetworkSessionHandler &handler);

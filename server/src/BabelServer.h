@@ -18,7 +18,7 @@ public:
 
     std::unique_ptr<NetworkClient> clientProvider(ptr<NetworkSession> session) override;
 
-    void sendToAll(NetworkClient *sender, NetworkMessage const &msg);
+    void sendToAll(NetworkClient *sender, NetworkMessage &&msg);
     BabelUser *find(std::string const &pseudo);
 };
 

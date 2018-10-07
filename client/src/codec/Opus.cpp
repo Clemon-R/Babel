@@ -32,7 +32,6 @@ Opus::~Opus()
 std::vector<unsigned char>    Opus::encode(const std::vector<SAMPLE> &values)
 {
     int nbBytes = 0;
-    int i = 0;
     unsigned char   *result = new unsigned char[MAX_PACKET_SIZE];
 
 	;
@@ -45,7 +44,7 @@ std::vector<unsigned char>    Opus::encode(const std::vector<SAMPLE> &values)
     return (std::vector<unsigned char>(result, result + nbBytes));
 }
 
-std::vector<SAMPLE> Opus::decode(const std::tuple<unsigned char *, int> &values)
+std::vector<SAMPLE> Opus::decode(const std::vector<unsigned char> &values)
 {
     std::vector<SAMPLE> result;
     int frame_size = 0;
@@ -53,9 +52,9 @@ std::vector<SAMPLE> Opus::decode(const std::tuple<unsigned char *, int> &values)
 
     if (!_decoder)
         throw Exception("opus: no decoder initiated");
-    if (!std::get<0>(values))
+    if (values.empty())
         return (result);
-    frame_size = opus_decode_float(_decoder, std::get<0>(values), std::get<1>(values), out, SAMPLE_SIZE, 0);
+    frame_size = opus_decode_float(_decoder, &values[0], values.size(), out, SAMPLE_SIZE, 0);
     if (frame_size < 0)
         throw Exception("opus: error while decoding");
     for (int i = 0;i < SAMPLE_SIZE*CHANNELS;i++)

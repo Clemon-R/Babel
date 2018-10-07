@@ -12,15 +12,21 @@ NetworkClient::NetworkClient(ptr<NetworkSession> session)
 {}
 
 
-void NetworkClient::send(NetworkMessage const &message) {
+void NetworkClient::send(NetworkMessage &&message, bool safe) {
     _writer.reset();
     NetworkProtocol::serialize(message, _writer);
-    _session->send(_writer.bytes());
+    _session->send(_writer.bytes(), safe);
+}
+
+void NetworkClient::send(NetworkMessage const &message, bool safe) {
+    _writer.reset();
+    NetworkProtocol::serialize(message, _writer);
+    _session->send(_writer.bytes(), safe);
 }
 
 std::unique_ptr<NetworkMessage> NetworkClient::read(char const *bytes, sizet length) {
     _reader.reset(bytes, length);
-    return NetworkProtocol::deserialize(_reader);
+    return std::move(NetworkProtocol::deserialize(_reader));
 }
 
 void NetworkClient::kick() {

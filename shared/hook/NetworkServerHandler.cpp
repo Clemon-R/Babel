@@ -32,7 +32,9 @@ void NetworkServerHandler::onReceived(ptr<NetworkSession> session, const char *d
 
 void NetworkServerHandler::onSent(ptr<NetworkSession> session, const char *data, sizet size) const {
     try {
-        auto msg = _connector->getClient()->read(data, size);
+        std::unique_ptr<NetworkMessage> tmp(std::move(_connector->getClient()->read(data, size)));
+        NetworkMessage  *msg = tmp.release();
+
         std::cout << "[network]: sent " << *msg << std::endl;
     } catch(std::exception &e) {
         std::cout << "[network]: sent invalid data, server will kick you" << std::endl;

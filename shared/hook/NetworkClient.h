@@ -13,9 +13,10 @@
 class NetworkClient {
 public:
     explicit NetworkClient(ptr<NetworkSession> session);
-    ~NetworkClient() {}
+    virtual ~NetworkClient() {};
 
-    virtual void send(NetworkMessage const &message);
+    virtual void send(NetworkMessage &&message, bool safe = false);
+    virtual void send(NetworkMessage const &message, bool safe = false);
     virtual std::unique_ptr<NetworkMessage> read(char const *bytes, sizet length);
 
     void kick();

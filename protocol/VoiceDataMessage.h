@@ -11,20 +11,26 @@
 struct VoiceDataMessage : NetworkMessage {
     static opcode constexpr OPCODE = 7;
 
-    std::vector<unsigned char> data;
+    std::vector<unsigned char> *data;
+    ~VoiceDataMessage(){
+        if (data){
+            delete data;
+            data = nullptr;
+        }
+    }
 
     VoiceDataMessage() : NetworkMessage(OPCODE) {}
 
     VoiceDataMessage(std::string const &data_) : NetworkMessage(OPCODE),
-                                                 data(&data_[0], &data_[0] + data_.size()) {}
+                                                 data(new std::vector<unsigned char>(&data_[0], &data_[0] + data_.size())) {}
 
     VoiceDataMessage(const boost::uint8_t *data_, sizet size)
             : NetworkMessage(OPCODE),
-              data(data_, data_ + size) {}
+              data(new std::vector<unsigned char>(data_, data_ + size)) {}
 
     VoiceDataMessage(std::vector<unsigned char> const &data_)
             : NetworkMessage(OPCODE),
-              data(data_) {}
+              data(new std::vector<unsigned char>(data_)) {}
 
     void serialize(BinaryWriter &writer) const override {
         writer & data;
@@ -35,7 +41,7 @@ struct VoiceDataMessage : NetworkMessage {
     }
 
     std::ostream &dump(std::ostream &o) const override {
-        return o << "VoiceDataMessage(data=" << util::dumpBinary(data) << ")";
+        return o << "VoiceDataMessage(data=[packed])";
     }
 };
 

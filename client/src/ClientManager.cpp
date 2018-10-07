@@ -149,7 +149,6 @@ void ClientManager::callEtablish() {
     _ui->displayCallEtablish();
     new std::thread([this]() {
         std::unique_ptr<sound::Microphone>  mic(nullptr);
-        std::unique_ptr<sound::Speaker>  speak(nullptr);
         std::unique_ptr<Opus>   codec(nullptr);
         std::vector<unsigned char>  bin;
         std::vector<SAMPLE> tmp;
@@ -175,12 +174,43 @@ void ClientManager::callEtablish() {
                 Pa_Sleep(10);
             }
             mic->stop();
-            Pa_Terminate();
+            //Pa_Terminate();
         }
         catch (const std::exception &error) {
             std::cerr << error.what() << std::endl;
         }
     });
+
+    /*new std::thread([this]() {
+        std::unique_ptr<sound::Speaker>  speak(nullptr);
+        std::unique_ptr<Opus>   codec(nullptr);
+        std::vector<unsigned char>  bin;
+        std::vector<SAMPLE> tmp;
+
+        try {
+            codec.reset(new Opus());
+            speak.reset(new sound::Speaker(_volumeSpeaker));
+            speak->start();
+            while (!_imHost && _isCalling) {
+                _lockerSpeaker.lock();
+                while (!_listSamples.empty()) {
+                    tmp = codec->decode(_listSamples.front());
+                    _listSamples.pop_front();
+                    if (tmp.empty())
+                        continue;
+                    speak->addFrames(tmp);
+                }
+                _lockerSpeaker.unlock();
+                tmp.clear();
+                Pa_Sleep(10);
+            }
+            speak->stop();
+            //Pa_Terminate();
+        }
+        catch (const std::exception &error) {
+            std::cerr << error.what() << std::endl;
+        }
+    });*/
 }
 
 const std::string &ClientManager::getCallContact() const {
@@ -223,10 +253,16 @@ void ClientManager::endOfCall() {
     _isCalling = false;
 }
 
-void ClientManager::sendToContact(const NetworkMessage &message) {
+void ClientManager::sendToContact(NetworkMessage const &message) {
     if (_imHost) {
         for (auto &client: _server.getClients())
             client.second->send(message);
     } else
         _hostConnector.getClient()->send(message);
+}
+
+void ClientManager::addSampleAudio(const std::vector<unsigned char> &samples) {
+    lock_t lock(_lockerSpeaker);
+
+    _listSamples.push_back(samples);
 }

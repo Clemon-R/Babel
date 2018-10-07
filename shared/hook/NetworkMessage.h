@@ -11,7 +11,7 @@
 using opcode = boost::uint16_t;
 
 struct NetworkMessage {
-    virtual ~NetworkMessage() = default;
+    virtual ~NetworkMessage() {};
 
     explicit NetworkMessage(opcode id) : _id(id) {}
 

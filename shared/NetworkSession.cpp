@@ -84,16 +84,22 @@ tcp::socket &NetworkSession::getSocket() {
     return _socket;
 }
 
-void NetworkSession::send(char const *bytes, sizet length) {
-    _pending.emplace_back(bytes, bytes + length);
-    if (_pending.size() == 1)
-        asyncWrite();
+void NetworkSession::send(char const *bytes, sizet length, bool safe) {
+    if (!safe) {
+        _pending.emplace_back(bytes, bytes + length);
+        if (_pending.size() == 1)
+            asyncWrite();
+    } else
+        _socket.get_io_context().post(boost::bind(&NetworkSession::send, this, bytes, length, false));
 }
 
-void NetworkSession::send(std::vector<char> const &bytes) {
-    _pending.push_back(bytes);
-    if (_pending.size() == 1)
-        asyncWrite();
+void NetworkSession::send(std::vector<char> const &bytes, bool safe) {
+    if (!safe) {
+        _pending.push_back(bytes);
+        if (_pending.size() == 1)
+            asyncWrite();
+    } else
+        _socket.get_io_context().post(boost::bind(&NetworkSession::send, this, bytes, false));
 }
 
 void NetworkSession::asyncWrite() {
@@ -109,6 +115,8 @@ void NetworkSession::asyncWrite() {
 }
 
 void NetworkSession::onWritten(error_code const &error) {
+    if (_pending.empty())
+        return;
     auto &sent = _pending.front();
     _handler->onSent(shared_from_this(), &sent[0], sent.size());
     _pending.pop_front();

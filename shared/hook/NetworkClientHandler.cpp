@@ -23,9 +23,11 @@ void NetworkClientHandler::onReceived(ptr<NetworkSession> session, const char *d
     NetworkClient *client = _server->getClients()[session->getId()].get();
 
     try {
-        auto msg = client->read(data, size);
+        std::unique_ptr<NetworkMessage> tmp(std::move(client->read(data, size)));
+        NetworkMessage  *msg = tmp.release();
+
         std::cout << "[client " << session->getId() << "]: recv " << *msg << std::endl;
-        _controller->parseMessage(client, msg.get());
+        _controller->parseMessage(client, msg);
     } catch(std::exception &e) {
         printf("[client %zu]: invalid data received, client kicked\n", session->getId());
         client->kick();
@@ -36,8 +38,12 @@ void NetworkClientHandler::onReceived(ptr<NetworkSession> session, const char *d
 void NetworkClientHandler::onSent(ptr<NetworkSession> session, const char *data, sizet size) const {
     NetworkClient *client = _server->getClients()[session->getId()].get();
 
-    auto msg = client->read(data, size);
-    std::cout << "[client " << session->getId() << "]: sent " << *msg << std::endl;
+    try {
+        auto msg = client->read(data, size);
+        std::cout << "[client " << session->getId() << "]: sent " << *msg << std::endl;
+    }catch (const std::exception &error){
+
+    }
 }
 
 

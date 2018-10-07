@@ -23,7 +23,7 @@ BabelUser *BabelServer::find(std::string const &name) {
     return nullptr;
 }
 
-void BabelServer::sendToAll(NetworkClient *sender, NetworkMessage const &msg) {
+void BabelServer::sendToAll(NetworkClient *sender, NetworkMessage &&msg) {
     for (auto &client: getClients())
         if (client.first != sender->getId())
             client.second->send(msg);
