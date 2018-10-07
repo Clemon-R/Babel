@@ -22,7 +22,7 @@ public:
     ~Opus();
 
     std::vector<unsigned char>    encode(const std::vector<SAMPLE> &values);
-    std::vector<SAMPLE> decode(const std::tuple<unsigned char *, int> &values);
+    std::vector<SAMPLE> decode(const  std::vector<unsigned char> &values);
 private:
     OpusDecoder *_decoder;
     OpusEncoder *_encoder;

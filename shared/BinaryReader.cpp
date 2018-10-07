@@ -9,7 +9,7 @@ BinaryReader::BinaryReader()
           _position(0)
 {}
 
-BinaryReader::BinaryReader(char const *buffer, sizet size)
+BinaryReader::BinaryReader(const boost::uint8_t *buffer, sizet size)
         : _buffer(buffer),
           _position(0)
 {}
@@ -18,7 +18,7 @@ void BinaryReader::seek(sizet position) {
     _position = position;
 }
 
-void BinaryReader::reset(char const *buffer, sizet size) {
+void BinaryReader::reset(const boost::uint8_t *buffer, sizet size) {
     _position = 0;
     _buffer = buffer;
     _size = size;

@@ -7,7 +7,7 @@
 
 #include "Network.h"
 
-using buffer_t = std::vector<char>;
+using buffer_t = std::vector<boost::uint8_t>;
 
 class BinaryWriter {
 public:
@@ -28,7 +28,7 @@ private:
     template<class T>
     void writeType(T value) {
         sizet size = sizeof(T);
-        _buffer.insert(_buffer.begin() + _position, (char *)&value, (char *)&value + size);
+        _buffer.insert(_buffer.begin() + _position, (boost::uint8_t *)&value, (boost::uint8_t *)&value + size);
         _position += size;
     }
 
@@ -38,7 +38,7 @@ private:
 
         writeType((boost::uint64_t) list.size());
         for (sizet i=0; i < list.size(); ++i) {
-            auto value = (char *) &list[i];
+            auto value = (boost::uint8_t *) &list[i];
             _buffer.insert(_buffer.begin() + _position, &value, &value + size);
             _position += size;
         }
@@ -52,6 +52,13 @@ private:
             _buffer.insert(_buffer.begin() + _position, &list.at(i)[0], &list.at(i)[0] + list.at(i).size());
             _position += list.at(i).size();
         }
+    }
+
+    template<class T>
+    void writeType(std::vector<boost::uint8_t> list) {
+        writeType((boost::uint64_t) list.size());
+        _buffer.insert(_buffer.begin() + _position, &list[0], &list[0] + list.size());
+        _position += list.size();
     }
 
     template<class T>

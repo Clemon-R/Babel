@@ -19,9 +19,10 @@ void NetworkServerHandler::onConnect(ptr<NetworkSession> session) const {
 }
 
 
-void NetworkServerHandler::onReceived(ptr<NetworkSession> session, const char *data, sizet size) const {
+void NetworkServerHandler::onReceived(ptr<NetworkSession> session, const boost::uint8_t *data, sizet size) const {
     try {
         auto msg = _connector->getClient()->read(data, size);
+
         std::cout << "[network]: recv " << *msg << std::endl;
         _controller->parseMessage(_connector->getClient(), msg.get());
     } catch(std::exception &e) {
@@ -30,9 +31,10 @@ void NetworkServerHandler::onReceived(ptr<NetworkSession> session, const char *d
 }
 
 
-void NetworkServerHandler::onSent(ptr<NetworkSession> session, const char *data, sizet size) const {
+void NetworkServerHandler::onSent(ptr<NetworkSession> session, const boost::uint8_t *data, sizet size) const {
     try {
         auto msg = _connector->getClient()->read(data, size);
+
         std::cout << "[network]: sent " << *msg << std::endl;
     } catch(std::exception &e) {
         std::cout << "[network]: sent invalid data, server will kick you" << std::endl;

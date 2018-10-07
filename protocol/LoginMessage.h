@@ -5,6 +5,7 @@
 #ifndef SERVER_LOGINMESSAGE_H
 #define SERVER_LOGINMESSAGE_H
 
+#include <shared/Util.h>
 #include "../shared/hook/NetworkMessage.h"
 
 struct LoginMessage : NetworkMessage {
@@ -26,7 +27,7 @@ struct LoginMessage : NetworkMessage {
     }
 
     std::ostream &dump(std::ostream &o) const override {
-        return o << "LoginMessage(pseudo=" << pseudo << ")";
+        return o << "LoginMessage(" << util::dump("pseudo", pseudo) << ")";
     }
 };
 

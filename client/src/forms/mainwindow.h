@@ -20,9 +20,13 @@ public:
             void on_username_textChanged(const QString &);
             void on_serverAdress_textChanged(const QString &);
             void on_serverPort_textChanged(const QString &);
+            void on_username_returnPressed();
+            void on_serverAdress_returnPressed();
+            void on_serverPort_returnPressed();
 
 private:
-            void textChanged();
+            void	textChanged();
+			void	returnPressed();
             
 		    Ui::MainWindow *ui;
 		    QWidget *_child;

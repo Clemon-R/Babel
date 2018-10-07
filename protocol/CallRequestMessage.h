@@ -6,6 +6,7 @@
 #define SERVER_OUTCALLREQUESTMESSAGE_H
 
 #include "../shared/hook/NetworkMessage.h"
+#include "../shared/Util.h"
 
 struct CallRequestMessage : NetworkMessage {
     static opcode constexpr OPCODE = 6;
@@ -15,18 +16,18 @@ struct CallRequestMessage : NetworkMessage {
     boost::uint16_t port;
 
     CallRequestMessage() : NetworkMessage(OPCODE) {}
+
     CallRequestMessage(std::string const &pseudo_, std::string const &host_, boost::uint16_t port_)
             : NetworkMessage(OPCODE),
               pseudo(pseudo_),
               host(host_),
-              port(port_)
-    {}
+              port(port_) {}
+
     CallRequestMessage(std::string const &pseudo_, boost::uint16_t port_)
             : NetworkMessage(OPCODE),
               pseudo(pseudo_),
               host(),
-              port(port_)
-    {}
+              port(port_) {}
 
     void serialize(BinaryWriter &writer) const override {
         writer & pseudo & host & port;
@@ -37,7 +38,10 @@ struct CallRequestMessage : NetworkMessage {
     }
 
     std::ostream &dump(std::ostream &o) const override {
-        return o << "CallRequestMessage(pseudo=" << &pseudo[0] << ", host=" << &host[0] << "port=" << port << ")";
+        return o << "CallRequestMessage(" <<
+                 util::dump("pseudo", pseudo) << ", " <<
+                 util::dump("host", host) << ", " <<
+                 util::dump("port", port) << ")";
     }
 };
 

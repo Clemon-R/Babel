@@ -2,6 +2,7 @@
 // Created by raphael on 22/09/18.
 //
 
+#include <shared/Network.h>
 #include "Microphone.hpp"
 #include "../Exception.hpp"
 
@@ -38,7 +39,7 @@ static int  recordCallback(const void *inputBuffer, void *outputBuffer,
         }
     }
     data->getRecords().push_back(result);
-    std::cout << "microphone: nbr frame - " << result.size() << std::endl;
+    //std::cout << "microphone: nbr frame - " << result.size() << std::endl;
     data->getLock().unlock();
     data->increaseFrameIndexBy(framesPerBuffer);
     return (paContinue);
@@ -48,16 +49,16 @@ namespace sound
 {
     Microphone::Microphone(int &volume) : _record(false), _stream(nullptr), _volume(volume)
     {
-        std::cout << "microphone: init...\n";
-        std::cout << "microphone: initiated\n";
+        //std::cout << "microphone: init...\n";
+        //std::cout << "microphone: initiated\n";
     }
 
     Microphone::~Microphone()
     {
-        std::cout << "microphone: destroying...\n";
+        //std::cout << "microphone: destroying...\n";
         if (isRecording())
             stop();
-        std::cout << "microphone: destroyed\n";
+        //std::cout << "microphone: destroyed\n";
     }
 
     void Microphone::start()
@@ -126,15 +127,14 @@ namespace sound
 
     std::vector<SAMPLE> Microphone::getNextSample()
     {
-        std::vector<std::vector<SAMPLE>>::iterator   current = _records.begin();
+        lock_t lock(_lock);
+        auto current = _records.begin();
         std::vector<SAMPLE> result;
 
         if (current == _records.end() || current->size() < SAMPLE_SIZE*CHANNELS)
             return (result);
-        _lock.lock();
         result = *current;
         _records.erase(current);
-        _lock.unlock();
         return (result);
     }
 

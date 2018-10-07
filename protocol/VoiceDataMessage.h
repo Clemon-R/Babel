@@ -12,8 +12,10 @@ struct VoiceDataMessage : NetworkMessage {
     static opcode constexpr OPCODE = 7;
 
     std::vector<unsigned char> data;
+    ~VoiceDataMessage(){
+    }
 
-    VoiceDataMessage() : NetworkMessage(OPCODE) {}
+    VoiceDataMessage() : NetworkMessage(OPCODE), data() {}
 
     VoiceDataMessage(std::string const &data_) : NetworkMessage(OPCODE),
                                                  data(&data_[0], &data_[0] + data_.size()) {}
@@ -35,7 +37,7 @@ struct VoiceDataMessage : NetworkMessage {
     }
 
     std::ostream &dump(std::ostream &o) const override {
-        return o << "VoiceDataMessage(data=" << util::dumpBinary(data) << ")";
+        return o << "VoiceDataMessage(" << util::dump("size", data.size()) <<", data=" << util::dumpBinary(data) << ")";
     }
 };
 

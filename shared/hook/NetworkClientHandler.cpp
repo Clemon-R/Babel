@@ -19,11 +19,12 @@ void NetworkClientHandler::onConnect(ptr<NetworkSession> session) const {
     _controller->onConnect(_server->getClients()[session->getId()].get());
 }
 
-void NetworkClientHandler::onReceived(ptr<NetworkSession> session, const char *data, sizet size) const {
+void NetworkClientHandler::onReceived(ptr<NetworkSession> session, const boost::uint8_t *data, sizet size) const {
     NetworkClient *client = _server->getClients()[session->getId()].get();
 
     try {
         auto msg = client->read(data, size);
+
         std::cout << "[client " << session->getId() << "]: recv " << *msg << std::endl;
         _controller->parseMessage(client, msg.get());
     } catch(std::exception &e) {
@@ -33,11 +34,13 @@ void NetworkClientHandler::onReceived(ptr<NetworkSession> session, const char *d
 }
 
 
-void NetworkClientHandler::onSent(ptr<NetworkSession> session, const char *data, sizet size) const {
+void NetworkClientHandler::onSent(ptr<NetworkSession> session, const boost::uint8_t *data, sizet size) const {
     NetworkClient *client = _server->getClients()[session->getId()].get();
 
-    auto msg = client->read(data, size);
-    std::cout << "[client " << session->getId() << "]: sent " << *msg << std::endl;
+    try {
+        auto msg = client->read(data, size);
+        std::cout << "[client " << session->getId() << "]: sent " << *msg << std::endl;
+    }catch (const std::exception &error){}
 }
 
 

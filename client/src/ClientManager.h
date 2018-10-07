@@ -20,26 +20,29 @@ public:
     void    startHost();
     void    closeAllClients();
     void    closeConnection();
+	void	close();
     boost::uint16_t getPort();
-    const std::string   &getCallContact() const;
     void    connectToServer(std::string const &host, uint16_t port);
     void    connectToHost(std::string const &host, uint16_t port);
     void    addContact(std::string const &contact);
     void    delContact(std::string const &contact);
     void    callContact(const std::string &contact);
     void    requestCall(const std::string &contact, const std::string &ip, unsigned short port);
-    void    refuseCall();
-    void    acceptCall();
+    void    refuseCall(const std::tuple<std::string, std::string, unsigned short>);
+    void    acceptCall(const std::tuple<std::string, std::string, unsigned short>);
     void    callRefused();
     void    callAccepted();
     void    callEtablish();
     void    endOfCall();
     void    sendToServer(NetworkMessage const &message);
     void    sendToContact(NetworkMessage const &message);
+    void    addSampleAudio(std::vector<unsigned char> const &samples);
+	void	serverDisconnect();
 
     std::vector<std::string> const &getContacts() const;
     bool    getImHost() const;
     bool    getIsCalling() const;
+	bool	isServer(session_id id);
 
     void    connectSuccess();
     void    authentication();
@@ -53,15 +56,16 @@ private:
     HookNetworkConnector _hostConnector;
     HookNetworkServer _server;
     std::mutex _locker;
+    std::mutex _lockerSpeaker;
     LiveWindow *_ui;
 
     std::string _username;
     std::vector<std::string> _contacts;
-    std::unique_ptr<std::tuple<std::string, std::string, unsigned short>>   _requestCall;
     bool _imHost;
     bool _isCalling;
     int &_volumeSpeaker;
     int &_volumeMicrophone;
+    std::vector<std::vector<unsigned char>> _listSamples;
 };
 
 
