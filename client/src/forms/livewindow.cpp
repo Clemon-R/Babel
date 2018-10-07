@@ -117,10 +117,7 @@ void LiveWindow::on_btnClose_clicked()
 {
 	if (!_manager->getIsCalling())
 		return;
-	if (_manager->getImHost())
-		_manager->closeAllClients();
-	else
-		_manager->closeConnection();
+	_manager->closeCall();
 }
 
 void LiveWindow::displayConnectSuccess() {
@@ -184,6 +181,12 @@ void LiveWindow::displayServerDisconnected()
 	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : red; }"));
 }
 
+void LiveWindow::displayAlreadyInCall()
+{
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "You are already in call"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : red; }"));
+}
+
 void LiveWindow::insertListData(const std::string &name) {
     QMetaObject::invokeMethod(this, "addItemList", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(name)));
 }
@@ -238,9 +241,7 @@ void LiveWindow::removeItemList(const QString &name) {
 void LiveWindow::on_listContact_clicked(const QModelIndex &index)
 {
 	(void)index;
-	if (!_manager->getIsCalling() && !ui->listContact->selectedItems().isEmpty())
-		ui->btnCall->setEnabled(true);
-		//std::cout << ui->listContact->selectedItems().at(0)->text().toStdString() << std::endl;
+	ui->btnCall->setEnabled(!_manager->getIsCalling() && !ui->listContact->selectedItems().isEmpty());
 }
 
 void LiveWindow::on_listContact_doubleClicked(const QModelIndex &index)

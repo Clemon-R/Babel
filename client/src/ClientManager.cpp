@@ -55,6 +55,14 @@ void ClientManager::closeConnection() {
 		_hostConnector.getSession()->getSocket().close();
 }
 
+void ClientManager::closeCall()
+{
+	if (_imHost)
+		closeAllClients();
+	else
+		closeConnection();
+}
+
 void ClientManager::close()
 {
 	lock_t lock(_locker);
@@ -131,10 +139,8 @@ void ClientManager::callContact(const std::string &contact) {
     _imHost = true;
 }
 
-void ClientManager::refuseCall(const std::tuple<std::string, std::string, unsigned short> infosContact) {
-	std::cout << "2\n";
+void ClientManager::refuseCall(const std::tuple<std::string, std::string, unsigned short> &infosContact) {
     sendToServer(CallRefusedMessage(std::get<0>(infosContact)));
-	std::cout << "3\n";
     _isCalling = false;
 }
 
@@ -149,69 +155,22 @@ void ClientManager::callAccepted() {
     _ui->allowCall(false);
 }
 
-void ClientManager::acceptCall(const std::tuple<std::string, std::string, unsigned short> infosContact) {
-	if (_isCalling)
+void ClientManager::acceptCall(const std::tuple<std::string, std::string, unsigned short> &infosContact) {
+	if (_isCalling) {
+		_ui->displayAlreadyInCall();
+		sendToServer(CallRefusedMessage(std::get<0>(infosContact)));
 		return;
-	std::cout << "2\n";
-    connectToHost(std::get<1>(infosContact), std::get<2>(infosContact));
-	std::cout << "3\n";
-    _ui->displayCallAccepted(std::get<0>(infosContact));
-	std::cout << "4\n";
-    _ui->allowCall(false);
-    _imHost = false;
-    _isCalling = true;
+	}
+	connectToHost(std::get<1>(infosContact), std::get<2>(infosContact));
+	_ui->displayCallAccepted(std::get<0>(infosContact));
+	_ui->allowCall(false);
+	_imHost = false;
+	_isCalling = true;
 }
 
 void ClientManager::callEtablish() {
     _ui->displayCallEtablish();
 	_ui->showParameter();
-    /*new std::thread([this]() {
-        std::unique_ptr<sound::Microphone>  mic(nullptr);
-        std::unique_ptr<sound::Speaker>  speak(nullptr);
-        std::unique_ptr<Opus>   codec(nullptr);
-        std::vector<unsigned char>  bin;
-        std::vector<SAMPLE> tmp;
-
-        try {
-            codec.reset(new Opus());
-            mic.reset(new sound::Microphone(_volumeMicrophone));
-            if (!mic)
-                return;
-            mic->start();
-            speak.reset(new sound::Speaker(_volumeSpeaker));
-            speak->start();
-            while (_isCalling) {
-                do {
-                    tmp = mic->getNextSample();
-                    if (tmp.size() == 0)
-                        break;
-                    bin = codec->encode(tmp);
-                    //sendToContact(VoiceDataMessage(bin));
-                    BinaryWriter writer;
-                    writer & bin;
-
-                    std::vector<uint8_t> test;
-                    BinaryReader reader;
-                    reader.reset(&writer.bytes()[0], writer.bytes().size());
-                    reader & test;
-                    printf("%zu, %zu, %zu\n", writer.bytes().size(), test.size(), bin.size());
-                    tmp = codec->decode(test);
-
-                    if (tmp.empty())
-                        continue;
-                    speak->addFrames(tmp);
-                    bin.clear();
-                } while (tmp.size() > 0);
-                tmp.clear();
-                Pa_Sleep(10);
-            }
-            mic->stop();
-            //Pa_Terminate();
-        }
-        catch (const std::exception &error) {
-            std::cerr << error.what() << std::endl;
-        }
-    });*/
     new std::thread([this]() {
         std::unique_ptr<sound::Microphone>  mic(nullptr);
         std::unique_ptr<Opus>   codec(nullptr);
@@ -312,10 +271,10 @@ bool ClientManager::isServer(session_id id)
 }
 
 void ClientManager::endOfCall() {
-    _ui->displayEndOfCall();
+	_ui->displayEndOfCall();
 	_ui->hideParameter();
     _ui->allowCall(true);
-    _isCalling = false;
+	_isCalling = false;
 }
 
 void ClientManager::sendToContact(NetworkMessage const &message) {

@@ -39,6 +39,7 @@ public:
     void	displayEndOfCall();
     void 	displayCallEtablish();
 	void	displayServerDisconnected();
+	void	displayAlreadyInCall();
 private slots:
     void    on_listContact_doubleClicked(const QModelIndex &index);
     void    on_listContact_clicked(const QModelIndex &index);

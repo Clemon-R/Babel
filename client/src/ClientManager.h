@@ -20,6 +20,7 @@ public:
     void    startHost();
     void    closeAllClients();
     void    closeConnection();
+	void	closeCall();
 	void	close();
     boost::uint16_t getPort();
     void    connectToServer(std::string const &host, uint16_t port);
@@ -28,8 +29,8 @@ public:
     void    delContact(std::string const &contact);
     void    callContact(const std::string &contact);
     void    requestCall(const std::string &contact, const std::string &ip, unsigned short port);
-    void    refuseCall(const std::tuple<std::string, std::string, unsigned short>);
-    void    acceptCall(const std::tuple<std::string, std::string, unsigned short>);
+    void    refuseCall(const std::tuple<std::string, std::string, unsigned short> &);
+    void    acceptCall(const std::tuple<std::string, std::string, unsigned short> &);
     void    callRefused();
     void    callAccepted();
     void    callEtablish();

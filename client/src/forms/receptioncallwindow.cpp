@@ -9,7 +9,6 @@ ReceptionCallWindow::ReceptionCallWindow(QWidget *parent, ClientManager *manager
 {
 	ui->setupUi(this);
 
-	std::cout << "0\n";
 	this->setWindowTitle(QString::fromStdString(std::get<0>(_infosContact)).append(this->windowTitle()));
 }
 
@@ -20,13 +19,11 @@ ReceptionCallWindow::~ReceptionCallWindow()
 
 void ReceptionCallWindow::on_buttonBox_rejected()
 {
-	std::cout << "1\n";
 	_manager->refuseCall(_infosContact);
 }
 
 void ReceptionCallWindow::on_accept_clicked()
 {
-	std::cout << "1\n";
 	_manager->acceptCall(_infosContact);
 	this->close();
 }
