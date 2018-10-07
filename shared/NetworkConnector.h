@@ -24,7 +24,7 @@ private:
     void onConnect(error_code const &error);
 
 private:
-    boost_io _io;
+    std::unique_ptr<boost_io> _io;
     NetworkSessionHandler *_handler;
     ptr<NetworkSession> _session;
     boost::thread _thread;

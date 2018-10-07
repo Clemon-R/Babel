@@ -40,6 +40,7 @@ void MainWindow::on_pushButton_Login_clicked()
             , std::atoi(ui->serverPort->text().toUtf8().constData()));
     if (!newWindow)
         throw Exception("mainwindow: impossible to open new window");
+    newWindow->move(geometry().center() - newWindow->geometry().center());
     newWindow->show();
     this->hide();
 }

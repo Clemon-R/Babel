@@ -18,22 +18,34 @@ public:
     LiveWindow(QWidget *parent, const std::string &username, const std::string &ip, unsigned short port);
     ~LiveWindow();
 
+    void 	allowCall(bool);
+
     void    insertListData(const std::string &name);
+    void    removeListData(const std::string &name);
 
     void    displayConnectSuccess();
     void    displayAuthentication();
     void    displayAuthenticationSuccess();
     void    displayAuthenticationFailed();
+    void	displayWaitingContactAnswer();
+    void	displayContactIsCalling();
+    void	displayCallRefused();
+    void	displayCallAccepted();
+    void	displayCallContactAccepted();
+    void 	displayPopupCall();
+    void	displayEndOfCall();
 private slots:
-    void    on_contactList_doubleClicked(const QModelIndex &index);
-    void    on_contactList_clicked(const QModelIndex &index);
+    void    on_listContact_doubleClicked(const QModelIndex &index);
+    void    on_listContact_clicked(const QModelIndex &index);
     void    addItemList(const QString &name);
+    void    removeItemList(const QString &name);
 
+    void	openPopupCall();
 private slots:
-    void on_closeBtn_clicked();
-    void on_parameterBtn_clicked();
-    void on_connectBtn_clicked();
-    void on_leaveBtn_clicked();
+    void on_btnClose_clicked();
+    void on_btnParameter_clicked();
+    void on_btnCall_clicked();
+    void on_btnLeave_clicked();
 
 private:
 	void	setState(bool);
@@ -45,8 +57,8 @@ private:
 
     int _volumeSpeaker;
     int _volumeMicrophone;
-    bool _state;
 	std::string	_username;
+	std::string	_contactCalled;
 
 	std::unique_ptr<ClientManager>	_manager;
 };

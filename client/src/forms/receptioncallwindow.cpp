@@ -1,14 +1,14 @@
 #include "receptioncallwindow.h"
 #include "ui_receptioncallwindow.h"
 
-ReceptionCallWindow::ReceptionCallWindow(QWidget *parent, std::function<void(bool)> func, const std::string &username) :
+ReceptionCallWindow::ReceptionCallWindow(QWidget *parent, ClientManager *manager) :
 	QDialog(parent),
 	ui(new Ui::ReceptionCallWindow),
-	_state(func)
+	_manager(manager)
 {
 	ui->setupUi(this);
 
-	this->setWindowTitle(QString::fromStdString(username).append(this->windowTitle()));
+	this->setWindowTitle(QString::fromStdString(_manager->getCallContact()).append(this->windowTitle()));
 }
 
 ReceptionCallWindow::~ReceptionCallWindow()
@@ -18,11 +18,11 @@ ReceptionCallWindow::~ReceptionCallWindow()
 
 void ReceptionCallWindow::on_buttonBox_rejected()
 {
-	_state(false);
+	_manager->refuseCall();
 }
 
 void ReceptionCallWindow::on_accept_clicked()
 {
-	_state(true);
+	_manager->acceptCall();
 	this->close();
 }

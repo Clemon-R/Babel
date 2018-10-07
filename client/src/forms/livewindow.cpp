@@ -13,12 +13,11 @@
 LiveWindow::LiveWindow(QWidget *parent, const std::string &username, const std::string &ip, unsigned short port) :
     LiveWindow(parent)
 {
+	ui->btnParameter->hide();
 	this->_username = username;
     this->setWindowTitle(this->windowTitle().append(QString::fromStdString(username)));
     _manager.reset(new ClientManager(this, username));
-    if (!_manager)
-        throw Exception("livewindow: error while allocating memory");
-    _manager->connect(ip, port);
+	_manager->connectToServer(ip, port);
 }
 
 LiveWindow::LiveWindow(QWidget *parent) :
@@ -28,8 +27,7 @@ LiveWindow::LiveWindow(QWidget *parent) :
     _child(nullptr),
     _call(nullptr),
     _volumeSpeaker(100),
-    _volumeMicrophone(100),
-    _state(false)
+    _volumeMicrophone(100)
 {
     ui->setupUi(this);
     QIcon icon(":/resources/icon.png");
@@ -41,19 +39,21 @@ LiveWindow::~LiveWindow()
     delete ui;
 }
 
-void LiveWindow::on_leaveBtn_clicked()
+void LiveWindow::on_btnLeave_clicked()
 {
-    if (_parent)
-        _parent->show();
-    _state = false;
+    if (_parent) {
+		_parent->move(geometry().center() - _parent->geometry().center());
+		_parent->show();
+	}
+	on_btnClose_clicked();
     this->close();
 }
 
 void	LiveWindow::setState(bool state)
 {
-	_state = state;
-	ui->closeBtn->setEnabled(state);
-	ui->connectBtn->setEnabled(!state);
+	/*_state = state;
+	ui->btnClose->setEnabled(state);
+	ui->btnCall->setEnabled(!state);
 	if (state) {
 		new std::thread([this]() {
 			std::unique_ptr<sound::Microphone>  mic(nullptr);
@@ -93,68 +93,134 @@ void	LiveWindow::setState(bool state)
 				std::cerr << error.what() << std::endl;
 			}
 		});
-	}
+	}*/
 }
 
-void LiveWindow::on_connectBtn_clicked()
+void LiveWindow::on_btnCall_clicked()
 {
-	_call = new ReceptionCallWindow(this, std::bind(&LiveWindow::setState, this, std::placeholders::_1), this->_username);
-	_call->show();    
+	if (_manager->getIsCalling() || ui->listContact->selectedItems().isEmpty())
+		return;
+	_contactCalled = ui->listContact->selectedItems().at(0)->text().toUtf8().toStdString();
+	_manager->callContact(_contactCalled);
 }
 
 
-void LiveWindow::on_parameterBtn_clicked()
+void LiveWindow::on_btnParameter_clicked()
 {
     _child = new SoundManagerWindow(this, _volumeSpeaker, _volumeMicrophone);
-    if (!_child)
-        throw Exception("livewindow: impossible to create new window");
+	_child->move(geometry().center() - _child->geometry().center());
     _child->show();
 }
 
+void LiveWindow::on_btnClose_clicked()
+{
+	if (!_manager->getIsCalling())
+		return;
+	if (_manager->getImHost())
+		_manager->closeAllClients();
+	else
+		_manager->closeConnection();
+}
+
 void LiveWindow::displayConnectSuccess() {
-	QMetaObject::invokeMethod(ui->infos, "setText", Qt::DirectConnection, Q_ARG(QString, "Connected to the server"));
-	QMetaObject::invokeMethod(ui->infos, "setStyleSheet", Qt::DirectConnection, Q_ARG(QString, "QLabel { color : green; }"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Connected to the server"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : green; }"));
 }
 
 void LiveWindow::displayAuthenticationSuccess() {
-	QMetaObject::invokeMethod(ui->infos, "setText", Qt::DirectConnection, Q_ARG(QString, "Authentication successfull"));
-	QMetaObject::invokeMethod(ui->infos, "setStyleSheet", Qt::DirectConnection, Q_ARG(QString, "QLabel { color : green; }"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Authentication successfull"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : green; }"));
 }
 
 void LiveWindow::displayAuthenticationFailed() {
-	QMetaObject::invokeMethod(ui->infos, "setText", Qt::DirectConnection, Q_ARG(QString, "Authentication failed"));
-	QMetaObject::invokeMethod(ui->infos, "setStyleSheet", Qt::DirectConnection, Q_ARG(QString, "QLabel { color : red; }"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Authentication failed"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : red; }"));
 }
 
 void LiveWindow::displayAuthentication() {
-	QMetaObject::invokeMethod(ui->infos, "setText", Qt::DirectConnection, Q_ARG(QString, "Authentication in progress..."));
-	QMetaObject::invokeMethod(ui->infos, "setStyleSheet", Qt::DirectConnection, Q_ARG(QString, "QLabel { color : black; }"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Authentication in progress..."));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : black; }"));
+}
+
+void LiveWindow::displayWaitingContactAnswer() {
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Waiting " + QString::fromStdString(_contactCalled) + " to reply..."));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : black; }"));
+}
+
+void LiveWindow::displayContactIsCalling() {
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(_manager->getCallContact()) + " is calling..."));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : black; }"));
+}
+
+void LiveWindow::displayCallRefused()  {
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Call from " + QString::fromStdString(_contactCalled) + " refused"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : red; }"));
+}
+
+void LiveWindow::displayCallAccepted() {
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Call from " + QString::fromStdString(_manager->getCallContact()) + " accepted"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : green; }"));
+}
+
+void LiveWindow::displayCallContactAccepted() {
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(_contactCalled) + " accepted the call"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : green; }"));
+}
+
+void LiveWindow::displayEndOfCall() {
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "End of the call"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : black; }"));
 }
 
 void LiveWindow::insertListData(const std::string &name) {
-    QMetaObject::invokeMethod(this, "addItemList", Qt::DirectConnection, Q_ARG(QString, QString::fromStdString(name)));
+    QMetaObject::invokeMethod(this, "addItemList", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(name)));
 }
 
-void LiveWindow::on_contactList_clicked(const QModelIndex &index)
-{
-	(void)index;
-	if (!ui->contactList->selectedItems().isEmpty())
-		ui->connectBtn->setEnabled(true);
-		//std::cout << ui->contactList->selectedItems().at(0)->text().toStdString() << std::endl;
+void LiveWindow::removeListData(const std::string &name) {
+	QMetaObject::invokeMethod(this, "removeItemList", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(name)));
 }
 
-void LiveWindow::on_contactList_doubleClicked(const QModelIndex &index)
-{
-	on_contactList_clicked(index);
+void LiveWindow::displayPopupCall() {
+	QMetaObject::invokeMethod(this, "openPopupCall", Qt::QueuedConnection);
 }
 
-void LiveWindow::on_closeBtn_clicked()
-{
-    ui->closeBtn->setEnabled(false);
-    ui->connectBtn->setEnabled(true);
-    _state = false;
+void LiveWindow::openPopupCall() {
+	_call = new ReceptionCallWindow(this, _manager.get());
+	if (!_call)
+		throw Exception("livewindow: impossible to create new window");
+	_call->move(geometry().center() - _call->geometry().center());
+	_call->show();
 }
 
 void LiveWindow::addItemList(const QString &name) {
-	ui->contactList->addItem(name);
+	ui->listContact->addItem(name);
+}
+
+void LiveWindow::removeItemList(const QString &name) {
+	QList<QListWidgetItem *>	list = ui->listContact->findItems(name, Qt::MatchFlag::MatchExactly);
+	int row;
+
+	for (auto &item : list){
+		row = ui->listContact->row(item);
+		ui->listContact->takeItem(row);
+	}
+}
+
+void LiveWindow::on_listContact_clicked(const QModelIndex &index)
+{
+	(void)index;
+	if (!_manager->getIsCalling() && !ui->listContact->selectedItems().isEmpty())
+		ui->btnCall->setEnabled(true);
+		//std::cout << ui->listContact->selectedItems().at(0)->text().toStdString() << std::endl;
+}
+
+void LiveWindow::on_listContact_doubleClicked(const QModelIndex &index)
+{
+	on_listContact_clicked(index);
+	on_btnCall_clicked();
+}
+
+void LiveWindow::allowCall(bool state) {
+	ui->btnCall->setEnabled(state && !ui->listContact->selectedItems().isEmpty());
+	ui->btnClose->setEnabled(!state);
 }

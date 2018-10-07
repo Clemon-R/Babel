@@ -104,6 +104,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="serverAdress">
+        <property name="text">
+         <string>127.0.0.1</string>
+        </property>
         <property name="placeholderText">
          <string>Ex : 127.0.0.1</string>
         </property>
@@ -130,6 +133,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="serverPort">
+        <property name="text">
+         <string>4242</string>
+        </property>
         <property name="placeholderText">
          <string>Ex : 444</string>
         </property>

@@ -23,7 +23,7 @@ class ClientController : public NetworkController {
 public:
     ClientController(ClientManager *manager) : _manager(manager){};
 
-    void onConnect(NetworkClient *client) override {};
+    void onConnect(NetworkClient *client) override;
     void onDisconnect(NetworkClient *client, error_code const &error) override;
 
 protected:

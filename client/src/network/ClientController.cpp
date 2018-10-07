@@ -5,6 +5,8 @@
 #include <protocol/LoginMessage.h>
 #include <client/src/network/ClientController.h>
 #include <client/src/ClientManager.h>
+#include "ClientController.h"
+
 
 void ClientController::onServerReady(NetworkClient *user, HelloConnectMessage *msg) {
     _manager->connectSuccess();
@@ -13,11 +15,17 @@ void ClientController::onServerReady(NetworkClient *user, HelloConnectMessage *m
 
 void ClientController::onDisconnect(NetworkClient *client, error_code const &error) {
     //TODO: disconnected from the server (error.what() = reason )
+    if ((!_manager->getImHost() && _manager->getIsCalling()) || (_manager->isHostClient(client->getId()) && _manager->getHostClients() == 1)) {
+        _manager->endOfCall();
+    }
+    if (_manager->isHostClient(client->getId())) {
+        //TODO: il reste des gens dans la call
+    }
 }
 
 void ClientController::onContactReady(NetworkClient *user, ConnectionEtablishedMessage *msg) {
     //TODO: connected to the contact in P2P
-    // TU peux commencer à send des VoiceDataMessage depuis là
+    // TU peux commencer à sendToServer des VoiceDataMessage depuis là
 }
 
 void ClientController::onNewContact(NetworkClient *user, AddContactMessage *msg) {
@@ -27,7 +35,9 @@ void ClientController::onNewContact(NetworkClient *user, AddContactMessage *msg)
 }
 
 void ClientController::onDisconnectedContact(NetworkClient *user, DelContactMessage *msg) {
-    msg->delClients; //list of strings
+    for (const std::string &pseudo : msg->delClients){
+        _manager->delContact(pseudo);
+    }
 
     /** TODO:   supprimer les contacts reçus
      *          refresh l'UI
@@ -53,16 +63,11 @@ void ClientController::onServerError(NetworkClient *user, ErrorResponseMessage *
 }
 
 void ClientController::onCallRequest(NetworkClient *user, CallRequestMessage *msg) {
-    msg->host; //host ip
-    msg->port;
-    msg->pseudo; //caller
-    //TODO: appel entrant, stoquer les infos de connexion
-    //      si le mec refuse l'appel, envoyer un RefusedCallMessage(caller)
-    //      si il accepte, tu te connecte au host:port
+    _manager->requestCall(msg->pseudo, msg->host, msg->port);
 }
 
 void ClientController::onCallRefused(NetworkClient *user, CallRefusedMessage *msg) {
-    msg->pseudo; //contact appelé qui a refusé
+    _manager->callRefused();
 
     //TODO: raffraichir l'UI, call refusée
 }
@@ -73,4 +78,11 @@ void ClientController::onVoiceDataReceived(NetworkClient *user, VoiceDataMessage
 
 
     //TODO: C'est ici que tu reçois la data audio, faut les faire écouter au client
+}
+
+void ClientController::onConnect(NetworkClient *client) {
+    if (_manager->getImHost()) {
+        client->send(ConnectionEtablishedMessage());
+        _manager->callAccepted();
+    }
 }

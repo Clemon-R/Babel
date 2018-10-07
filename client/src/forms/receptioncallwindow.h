@@ -2,7 +2,8 @@
 #define RECEPTIONCALLWINDOW_H
 
 #include <QDialog>
-#include <functional> 
+#include <functional>
+#include <client/src/ClientManager.h>
 
 namespace Ui {
 class ReceptionCallWindow;
@@ -13,7 +14,7 @@ class ReceptionCallWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit ReceptionCallWindow(QWidget *parent, std::function<void (bool)> func, const std::string &);
+    explicit ReceptionCallWindow(QWidget *parent, ClientManager *manager);
     ~ReceptionCallWindow();
 
 private slots:
@@ -23,7 +24,7 @@ private slots:
 
 private:
     Ui::ReceptionCallWindow *ui;
-	std::function<void(bool)>	_state;
+    ClientManager	*_manager;
 };
 
 #endif // RECEPTIONCALLWINDOW_H

@@ -14,9 +14,10 @@ NetworkConnector::NetworkConnector(NetworkSessionHandler *handler)
 {}
 
 void NetworkConnector::connect(std::string const &host, std::string const &port, bool useThread) {
-    _session = NetworkSession::create(_io, *_handler);
+    _io.reset(new boost_io());
+    _session = NetworkSession::create(*_io, *_handler);
 
-    tcp::resolver resolver(_io);
+    tcp::resolver resolver(*_io);
     tcp::resolver::query query(host, port);
     tcp::resolver::iterator endpoint(resolver.resolve(query));
 
@@ -24,9 +25,9 @@ void NetworkConnector::connect(std::string const &host, std::string const &port,
     boost::asio::async_connect(_session->getSocket(), endpoint, handler);
 
     if (useThread)
-        _thread = boost::thread(boost::bind(&boost::asio::io_service::run, &_io));
+        _thread = boost::thread(boost::bind(&boost::asio::io_service::run, _io.get()));
     else
-        _io.run();
+        _io->run();
 }
 
 void NetworkConnector::connect(std::string const &host, boost::uint16_t port, bool useThread) {
@@ -36,7 +37,7 @@ void NetworkConnector::connect(std::string const &host, boost::uint16_t port, bo
 
 void NetworkConnector::onConnect(error_code const &error) {
     if (error)
-        throw std::runtime_error("NetworkConnector: can't connect");
+        throw std::runtime_error("NetworkConnector: can't connectToServer");
     _handler->onConnect(_session);
     _session->asyncAwaitPacket();
 }

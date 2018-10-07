@@ -40,7 +40,7 @@
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
-  <widget class="QPushButton" name="leaveBtn">
+  <widget class="QPushButton" name="btnLeave">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -53,7 +53,7 @@
     <string>Disconnect</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="closeBtn">
+  <widget class="QPushButton" name="btnClose">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -69,7 +69,7 @@
     <string>Close</string>
    </property>
   </widget>
-  <widget class="QLabel" name="infos">
+  <widget class="QLabel" name="lblInfos">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -79,7 +79,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Trying to connect to server...</string>
+    <string>Trying to connectToServer to server...</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
@@ -94,7 +94,7 @@
    <property name="title">
     <string>Contact List</string>
    </property>
-   <widget class="QListWidget" name="contactList">
+   <widget class="QListWidget" name="listContact">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -114,7 +114,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QPushButton" name="connectBtn">
+  <widget class="QPushButton" name="btnCall">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -130,7 +130,7 @@
     <string>Call</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="parameterBtn">
+  <widget class="QPushButton" name="btnParameter">
    <property name="enabled">
     <bool>true</bool>
    </property>
