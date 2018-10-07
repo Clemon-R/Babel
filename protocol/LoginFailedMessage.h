@@ -6,6 +6,7 @@
 #define SERVER_LOGINFAILEDMESSAGE_H
 
 #include "../shared/hook/NetworkMessage.h"
+#include "../shared/Util.h"
 
 struct LoginFailedMessage : NetworkMessage {
     static opcode constexpr OPCODE = 4;
@@ -26,7 +27,7 @@ struct LoginFailedMessage : NetworkMessage {
     }
 
     std::ostream &dump(std::ostream &o) const override {
-        return o << "LoginFailedMessage(reason=" << reason << ")";
+        return o << "LoginFailedMessage(" << util::dump("reason", reason) <<")";
     }
 };
 

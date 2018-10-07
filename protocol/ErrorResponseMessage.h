@@ -5,6 +5,7 @@
 #ifndef SERVER_ERRORRESPONSEMESSAGE_H
 #define SERVER_ERRORRESPONSEMESSAGE_H
 
+#include "../shared/Util.h"
 #include "../shared/hook/NetworkMessage.h"
 
 struct ErrorResponseMessage : NetworkMessage {
@@ -26,7 +27,7 @@ struct ErrorResponseMessage : NetworkMessage {
     }
 
     std::ostream &dump(std::ostream &o) const override {
-        return o << "ErrorResponseMessage(data=" << &what[0] << ")";
+        return o << "ErrorResponseMessage(" << util::dump("what", what) << ")";
     }
 };
 

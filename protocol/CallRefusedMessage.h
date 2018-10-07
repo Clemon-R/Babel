@@ -6,6 +6,7 @@
 #define SERVER_REFUSECALLREQUEST_H
 
 #include "../shared/hook/NetworkMessage.h"
+#include "../shared/Util.h"
 
 struct CallRefusedMessage : NetworkMessage {
     static opcode constexpr OPCODE = 9;
@@ -26,7 +27,7 @@ struct CallRefusedMessage : NetworkMessage {
     }
 
     std::ostream &dump(std::ostream &o) const override {
-        return o << "CallRefusedMessage(pseudo=" << &pseudo[0] << ")";
+        return o << "CallRefusedMessage(" << util::dump("pseudo", pseudo) << ")";
     }
 };
 

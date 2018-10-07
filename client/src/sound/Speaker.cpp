@@ -22,7 +22,7 @@ static int playCallback( const void *inputBuffer, void *outputBuffer,
         return (paComplete);
     else if (it == data->getFrames().end())
         return (paContinue);
-    std::cout << "speaker: nbr frame - " << it->size() << std::endl;
+    //std::cout << "speaker: nbr frame - " << it->size() << std::endl;
     for (const SAMPLE value : *it){
         *speaker++ = value * data->getVolume();
     }
@@ -37,16 +37,16 @@ namespace sound
 {
     Speaker::Speaker(int &volume) : _state(false), _stream(nullptr), _volume(volume)
     {
-        std::cout << "speaker: init...\n";
-        std::cout << "speaker: initiated\n";
+        //std::cout << "speaker: init...\n";
+        //std::cout << "speaker: initiated\n";
     }
 
     Speaker::~Speaker()
     {
-        std::cout << "speaker: destroying...\n";
+        //std::cout << "speaker: destroying...\n";
         if (isSpeaking())
             stop();
-        std::cout << "speaker: destroyed\n";
+        //std::cout << "speaker: destroyed\n";
     }
 
     void Speaker::start()
@@ -77,7 +77,7 @@ namespace sound
         err = Pa_StartStream(_stream);
         if (err != paNoError)
             throw Exception("speaker: error while starting the stream");
-        std::cout << "speaker: on\n";
+        //std::cout << "speaker: on\n";
     }
 
     void Speaker::stop()
@@ -86,7 +86,7 @@ namespace sound
         if(Pa_CloseStream(_stream) != paNoError)
             throw Exception("microphone: error while closing");
         _stream = nullptr;
-        std::cout << "speaker: off\n";
+        //std::cout << "speaker: off\n";
     }
 
     bool Speaker::isSpeaking()

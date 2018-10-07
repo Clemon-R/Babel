@@ -169,18 +169,16 @@ void ClientManager::callEtablish() {
                     if (tmp.size() == 0)
                         break;
                     bin = codec->encode(tmp);
-                    tmp = codec->decode(bin);
                     //sendToContact(VoiceDataMessage(bin));
                     BinaryWriter writer;
                     writer & bin;
-                    for (auto &c: writer.bytes())
-                        printf("%d.", c);
-                    printf("\n");
 
                     std::vector<uint8_t> test;
                     BinaryReader reader;
                     reader.reset(&writer.bytes()[0], writer.bytes().size());
                     reader & test;
+                    printf("%zu, %zu, %zu\n", writer.bytes().size(), test.size(), bin.size());
+                    tmp = codec->decode(test);
 
                     if (tmp.empty())
                         continue;
@@ -219,7 +217,7 @@ void ClientManager::callEtablish() {
                     codec.reset(new Opus());
                     speak.reset(new sound::Speaker(_volumeSpeaker));
                     speak->start();
-                    while (_imHost && _isCalling) {
+                    while (_isCalling) {
                         _lockerSpeaker.lock();
                         while (_listSamples.begin() != _listSamples.end()) {
                             tmp = codec->decode(*_listSamples.begin());
@@ -239,7 +237,7 @@ void ClientManager::callEtablish() {
                     std::cerr << error.what() << std::endl;
                 }
             });
-            while (!_imHost &&_isCalling) {
+            while (_isCalling) {
                 do {
                     tmp = mic->getNextSample();
                     if (tmp.size() == 0)
@@ -310,10 +308,8 @@ void ClientManager::sendToContact(NetworkMessage const &message) {
         _hostConnector.getClient()->send(message, true);
 }
 
-void ClientManager::addSampleAudio(std::vector<unsigned char> samples) {
+void ClientManager::addSampleAudio(std::vector<unsigned char> const &samples) {
     lock_t lock(_lockerSpeaker);
 
-    std::cout << "tes\n";
-    _listSamples.emplace_back(std::vector<unsigned  char>(samples));
-    std::cout << "test\n";
+    _listSamples.emplace_back(samples);
 }

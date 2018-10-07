@@ -25,13 +25,13 @@ namespace util {
 
     inline std::string dumpList(std::vector<std::string> const &list) {
         sizet size = list.size();
-        std::string result("{ ");
+        std::string result("{");
         for (sizet i=0; i < size; ++i) {
             result += "\"" + list.at(i) + "\"";
             if (i != size - 1)
                 result += ", ";
         }
-        result += " }";
+        result += "}";
         return result;
     }
 
@@ -47,7 +47,7 @@ namespace util {
         return data;
     }
 
-    inline std::string dumpBinary(std::vector<unsigned char> const &binary) {
+    inline std::string dumpBinary(std::vector<boost::uint8_t> const &binary) {
         sizet size = binary.size();
         std::string data;
 
@@ -58,6 +58,20 @@ namespace util {
         }
         return data;
     }
+
+    template<class T>
+    inline std::string dump(std::string &&var, T const &val) {
+        std::string data(var);
+        data += "=" + std::to_string(val);
+        return data;
+    }
+
+    inline std::string dump(std::string &&var, std::string const &value) {
+        std::string data(var);
+        data += "=\"" + value + "\"";
+        return data;
+    }
+
 }
 
 #endif //SERVER_UTIL_H

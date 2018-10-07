@@ -78,7 +78,8 @@ private:
         if (_position + size > _size)
             throw std::runtime_error("exceeded buffer");
 
-        list.insert(list.begin(), _buffer + _position, _buffer + size);
+        list.insert(list.begin(), _buffer + _position, _buffer + _position + size);
+        _position += list.size();
     }
 
     template<class T>

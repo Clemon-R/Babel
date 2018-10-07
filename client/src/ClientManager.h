@@ -36,7 +36,7 @@ public:
     void    endOfCall();
     void    sendToServer(NetworkMessage const &message);
     void    sendToContact(NetworkMessage const &message);
-    void    addSampleAudio(std::vector<unsigned char> samples);
+    void    addSampleAudio(std::vector<unsigned char> const &samples);
 
     std::vector<std::string> const &getContacts() const;
     bool    getImHost() const;

@@ -37,7 +37,7 @@ struct VoiceDataMessage : NetworkMessage {
     }
 
     std::ostream &dump(std::ostream &o) const override {
-        return o << "VoiceDataMessage(data=[packed])";
+        return o << "VoiceDataMessage(" << util::dump("size", data.size()) <<", data=" << util::dumpBinary(data) << ")";
     }
 };
 
