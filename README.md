@@ -14,6 +14,7 @@
 
 ### Necessary on windows
 Add the path of Qt lib msvc2015 to Path : C:\Qt\5.11.2\msvc2015\bin
+Add the path of Boost Conan lib to Path
 
 ### For both server and client
  * Don't forget to `cd setup && ./setup_linux.sh`

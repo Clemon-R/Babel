@@ -18,6 +18,9 @@ void ClientController::onDisconnect(NetworkClient *client, error_code const &err
     if ((!_manager->getImHost() && _manager->getIsCalling()) || (_manager->isHostClient(client->getId()) && _manager->getHostClients() == 1)) {
         _manager->endOfCall();
     }
+	if (_manager->isServer(client->getId())) {
+		_manager->serverDisconnect();
+	}
     if (_manager->isHostClient(client->getId())) {
         //TODO: il reste des gens dans la call
     }

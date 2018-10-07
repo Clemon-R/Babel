@@ -42,10 +42,11 @@ LiveWindow::~LiveWindow()
 void LiveWindow::on_btnLeave_clicked()
 {
     if (_parent) {
-		_parent->move(geometry().center() - _parent->geometry().center());
+		//_parent->move(geometry().center() - _parent->geometry().center());
 		_parent->show();
 	}
 	on_btnClose_clicked();
+	_manager->close();
     this->close();
 }
 
@@ -147,8 +148,8 @@ void LiveWindow::displayWaitingContactAnswer() {
 	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : black; }"));
 }
 
-void LiveWindow::displayContactIsCalling() {
-	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(_manager->getCallContact()) + " is calling..."));
+void LiveWindow::displayContactIsCalling(const std::string &name) {
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(name) + " is calling..."));
 	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : black; }"));
 }
 
@@ -157,8 +158,8 @@ void LiveWindow::displayCallRefused()  {
 	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : red; }"));
 }
 
-void LiveWindow::displayCallAccepted() {
-	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Call from " + QString::fromStdString(_manager->getCallContact()) + " accepted"));
+void LiveWindow::displayCallAccepted(const std::string &name) {
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Call from " + QString::fromStdString(name) + " accepted"));
 	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : green; }"));
 }
 
@@ -177,6 +178,12 @@ void LiveWindow::displayCallEtablish() {
     QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : green; }"));
 }
 
+void LiveWindow::displayServerDisconnected()
+{
+	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Server disconnected"));
+	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : red; }"));
+}
+
 void LiveWindow::insertListData(const std::string &name) {
     QMetaObject::invokeMethod(this, "addItemList", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(name)));
 }
@@ -185,12 +192,29 @@ void LiveWindow::removeListData(const std::string &name) {
 	QMetaObject::invokeMethod(this, "removeItemList", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(name)));
 }
 
-void LiveWindow::displayPopupCall() {
-	QMetaObject::invokeMethod(this, "openPopupCall", Qt::QueuedConnection);
+void LiveWindow::hideAllBtn()
+{
+	QMetaObject::invokeMethod(ui->btnCall, "hide", Qt::QueuedConnection);
+	QMetaObject::invokeMethod(ui->btnClose, "hide", Qt::QueuedConnection);
+	QMetaObject::invokeMethod(ui->btnParameter, "hide", Qt::QueuedConnection);
 }
 
-void LiveWindow::openPopupCall() {
-	_call = new ReceptionCallWindow(this, _manager.get());
+void LiveWindow::showParameter()
+{
+	QMetaObject::invokeMethod(ui->btnParameter, "show", Qt::QueuedConnection);
+}
+
+void LiveWindow::hideParameter()
+{
+	QMetaObject::invokeMethod(ui->btnParameter, "hide", Qt::QueuedConnection);
+}
+
+void LiveWindow::displayPopupCall(const std::tuple<std::string, std::string, unsigned short> &infosContact) {
+	QMetaObject::invokeMethod(this, "openPopupCall", Qt::QueuedConnection, Q_ARG(QString, QString::fromStdString(std::get<0>(infosContact))), Q_ARG(QString, QString::fromStdString(std::get<1>(infosContact))), Q_ARG(unsigned short, std::get<2>(infosContact)));
+}
+
+void LiveWindow::openPopupCall(const QString &name, const QString &ip, const unsigned short port) {
+	_call = new ReceptionCallWindow(this, _manager.get(), std::tuple<std::string, std::string, unsigned short>(name.toUtf8().toStdString(), ip.toUtf8().toStdString(), port));
 	if (!_call)
 		throw Exception("livewindow: impossible to create new window");
 	_call->move(geometry().center() - _call->geometry().center());

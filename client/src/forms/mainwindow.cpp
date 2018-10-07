@@ -52,7 +52,7 @@ void MainWindow::on_username_textChanged(const QString &arg1)
 
     if (!std::regex_match(tmp, r_username))
         ui->username->setText(ui->username->text().remove(ui->username->text().size() - 1, 1));
-    ui->lblInfos->setText("a-Z and 0-9 allowed, 3 character minimum");
+    ui->lblInfos->setText("Only alphanumeric allowed with minimum 3 to 84 characters");
     textChanged();
 }
 
@@ -62,7 +62,7 @@ void MainWindow::on_serverAdress_textChanged(const QString &arg1)
 
     if (!std::regex_match(arg1.toUtf8().constData(), r_adress))
         ui->serverAdress->setText(ui->serverAdress->text().remove(ui->serverAdress->text().size() - 1, 1));
-    ui->lblInfos->setText("Ip format allowed");
+    ui->lblInfos->setText("Only IP format allowed");
     textChanged();
 }
 
@@ -73,13 +73,13 @@ void MainWindow::on_serverPort_textChanged(const QString &arg1)
 
     if (!std::regex_match(arg1.toUtf8().constData(), r_port))
         ui->serverPort->setText(ui->serverPort->text().remove(ui->serverPort->text().size() - 1, 1));
-    ui->lblInfos->setText("0-9, 1 character minimum and 6 maximum");
+    ui->lblInfos->setText("Only numeric allowed minimum 1 to 6 caharcters");
     textChanged();
 }
 
 void MainWindow::textChanged()
 {
-    std::regex r_username("[a-zA-Z0-9-]{3,}");
+    std::regex r_username("[a-zA-Z0-9-]{3,84}");
     std::regex r_adress("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}");
     std::regex r_port("[0-9]{1,6}");
 
@@ -95,4 +95,25 @@ void MainWindow::textChanged()
             ui->pushButton_Login->setEnabled(false);
         ui->lblInfos->setStyleSheet("QLabel { color : red; }");
     }
+}
+
+void MainWindow::returnPressed()
+{
+	if (ui->pushButton_Login->isEnabled())
+		on_pushButton_Login_clicked();
+}
+
+void MainWindow::on_username_returnPressed()
+{
+	returnPressed();
+}
+
+void MainWindow::on_serverAdress_returnPressed()
+{
+	returnPressed();
+}
+
+void MainWindow::on_serverPort_returnPressed()
+{
+	returnPressed();
 }

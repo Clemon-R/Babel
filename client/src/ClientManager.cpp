@@ -51,7 +51,16 @@ void ClientManager::closeAllClients() {
 void ClientManager::closeConnection() {
     lock_t lock(_locker);
 
-    _hostConnector.getSession()->getSocket().close();
+	if (_hostConnector.getSession()->getSocket().is_open())
+		_hostConnector.getSession()->getSocket().close();
+}
+
+void ClientManager::close()
+{
+	lock_t lock(_locker);
+
+	if (_serverConnector.getSession()->getSocket().is_open())
+		_serverConnector.getSession()->getSocket().close();
 }
 
 
@@ -122,8 +131,10 @@ void ClientManager::callContact(const std::string &contact) {
     _imHost = true;
 }
 
-void ClientManager::refuseCall() {
-    sendToServer(CallRefusedMessage(getCallContact()));
+void ClientManager::refuseCall(const std::tuple<std::string, std::string, unsigned short> infosContact) {
+	std::cout << "2\n";
+    sendToServer(CallRefusedMessage(std::get<0>(infosContact)));
+	std::cout << "3\n";
     _isCalling = false;
 }
 
@@ -138,9 +149,14 @@ void ClientManager::callAccepted() {
     _ui->allowCall(false);
 }
 
-void ClientManager::acceptCall() {
-    connectToHost(std::get<1>(*_requestCall), std::get<2>(*_requestCall));
-    _ui->displayCallAccepted();
+void ClientManager::acceptCall(const std::tuple<std::string, std::string, unsigned short> infosContact) {
+	if (_isCalling)
+		return;
+	std::cout << "2\n";
+    connectToHost(std::get<1>(infosContact), std::get<2>(infosContact));
+	std::cout << "3\n";
+    _ui->displayCallAccepted(std::get<0>(infosContact));
+	std::cout << "4\n";
     _ui->allowCall(false);
     _imHost = false;
     _isCalling = true;
@@ -148,6 +164,7 @@ void ClientManager::acceptCall() {
 
 void ClientManager::callEtablish() {
     _ui->displayCallEtablish();
+	_ui->showParameter();
     /*new std::thread([this]() {
         std::unique_ptr<sound::Microphone>  mic(nullptr);
         std::unique_ptr<sound::Speaker>  speak(nullptr);
@@ -260,14 +277,9 @@ void ClientManager::callEtablish() {
     });
 }
 
-const std::string &ClientManager::getCallContact() const {
-    return std::get<0>(*_requestCall);
-}
-
 void ClientManager::requestCall(const std::string &contact, const std::string &ip, unsigned short port) {
-    _requestCall.reset(new std::tuple<std::string, std::string, unsigned short>(contact, ip, port));
-    _ui->displayPopupCall();
-    _ui->displayContactIsCalling();
+    _ui->displayPopupCall(std::tuple<std::string, std::string, unsigned short>(contact, ip, port));
+    _ui->displayContactIsCalling(contact);
 }
 
 sizet ClientManager::getHostClients() {
@@ -294,8 +306,14 @@ bool ClientManager::getIsCalling() const {
     return _isCalling;
 }
 
+bool ClientManager::isServer(session_id id)
+{
+	return id == _serverConnector.getClient()->getId();
+}
+
 void ClientManager::endOfCall() {
     _ui->displayEndOfCall();
+	_ui->hideParameter();
     _ui->allowCall(true);
     _isCalling = false;
 }
@@ -312,4 +330,10 @@ void ClientManager::addSampleAudio(std::vector<unsigned char> const &samples) {
     lock_t lock(_lockerSpeaker);
 
     _listSamples.emplace_back(samples);
+}
+
+void ClientManager::serverDisconnect()
+{
+	_ui->hideAllBtn();
+	_ui->displayServerDisconnected();
 }
