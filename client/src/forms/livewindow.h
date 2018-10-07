@@ -34,6 +34,7 @@ public:
     void	displayCallContactAccepted();
     void 	displayPopupCall();
     void	displayEndOfCall();
+    void 	displayCallEtablish();
 private slots:
     void    on_listContact_doubleClicked(const QModelIndex &index);
     void    on_listContact_clicked(const QModelIndex &index);

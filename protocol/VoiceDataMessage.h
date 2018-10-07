@@ -9,18 +9,22 @@
 #include "../shared/Util.h"
 
 struct VoiceDataMessage : NetworkMessage {
-    static opcode constexpr OPCODE = 8;
+    static opcode constexpr OPCODE = 7;
 
-    std::vector<char> data;
+    std::vector<unsigned char> data;
 
     VoiceDataMessage() : NetworkMessage(OPCODE) {}
+
     VoiceDataMessage(std::string const &data_) : NetworkMessage(OPCODE),
-                                           data(&data_[0], &data_[0] + data_.size())
-    {}
-    VoiceDataMessage(std::vector<char> const &data_)
+                                                 data(&data_[0], &data_[0] + data_.size()) {}
+
+    VoiceDataMessage(const boost::uint8_t *data_, sizet size)
             : NetworkMessage(OPCODE),
-              data(data_)
-    {}
+              data(data_, data_ + size) {}
+
+    VoiceDataMessage(std::vector<unsigned char> const &data_)
+            : NetworkMessage(OPCODE),
+              data(data_) {}
 
     void serialize(BinaryWriter &writer) const override {
         writer & data;

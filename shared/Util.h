@@ -47,7 +47,7 @@ namespace util {
         return data;
     }
 
-    inline std::string dumpBinary(std::vector<char> const &binary) {
+    inline std::string dumpBinary(std::vector<unsigned char> const &binary) {
         sizet size = binary.size();
         std::string data;
 

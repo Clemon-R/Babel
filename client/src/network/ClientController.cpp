@@ -24,6 +24,7 @@ void ClientController::onDisconnect(NetworkClient *client, error_code const &err
 }
 
 void ClientController::onContactReady(NetworkClient *user, ConnectionEtablishedMessage *msg) {
+    _manager->callEtablish();
     //TODO: connected to the contact in P2P
     // TU peux commencer à sendToServer des VoiceDataMessage depuis là
 }
@@ -84,5 +85,6 @@ void ClientController::onConnect(NetworkClient *client) {
     if (_manager->getImHost()) {
         client->send(ConnectionEtablishedMessage());
         _manager->callAccepted();
+        _manager->callEtablish();
     }
 }

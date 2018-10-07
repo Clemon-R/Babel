@@ -7,9 +7,12 @@
 #include <client/src/forms/livewindow.h>
 #include <client/src/network/ClientController.h>
 #include <protocol/LoginMessage.h>
+#include <client/src/sound/Microphone.hpp>
+#include <client/src/sound/Speaker.hpp>
+#include <client/src/codec/Opus.hpp>
 #include "ui_livewindow.h"
 
-ClientManager::ClientManager(LiveWindow *ui, const std::string &username)
+ClientManager::ClientManager(LiveWindow *ui, const std::string &username, int &volumeSpeaker, int &volumeMicrophone)
         : _controller(new ClientController(this)),
           _serverConnector(*_controller),
           _hostConnector(*_controller),
@@ -19,7 +22,9 @@ ClientManager::ClientManager(LiveWindow *ui, const std::string &username)
           _username(username),
           _contacts(),
           _imHost(false),
-          _isCalling(false)
+          _isCalling(false),
+          _volumeSpeaker(volumeSpeaker),
+          _volumeMicrophone(volumeMicrophone)
 {}
 
 void ClientManager::startHost() {
@@ -138,6 +143,44 @@ void ClientManager::acceptCall() {
     _ui->allowCall(false);
     _imHost = false;
     _isCalling = true;
+}
+
+void ClientManager::callEtablish() {
+    _ui->displayCallEtablish();
+    new std::thread([this]() {
+        std::unique_ptr<sound::Microphone>  mic(nullptr);
+        std::unique_ptr<sound::Speaker>  speak(nullptr);
+        std::unique_ptr<Opus>   codec(nullptr);
+        std::vector<unsigned char>  bin;
+        std::vector<SAMPLE> tmp;
+
+        try {
+            codec.reset(new Opus());
+            mic.reset(new sound::Microphone(_volumeMicrophone));
+            if (!mic)
+                return;
+            mic->start();
+            while (_isCalling) {
+                do {
+                    tmp = mic->getNextSample();
+                    if (tmp.size() == 0)
+                        break;
+                    bin = codec->encode(tmp);
+
+                    sendToContact(VoiceDataMessage(bin));
+
+                    bin.clear();
+                } while (tmp.size() > 0);
+                tmp.clear();
+                Pa_Sleep(10);
+            }
+            mic->stop();
+            Pa_Terminate();
+        }
+        catch (const std::exception &error) {
+            std::cerr << error.what() << std::endl;
+        }
+    });
 }
 
 const std::string &ClientManager::getCallContact() const {

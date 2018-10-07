@@ -29,24 +29,20 @@ Opus::~Opus()
     std::cout << "opus: destroyed\n";
 }
 
-std::tuple<unsigned char *, int>    Opus::encode(const std::vector<SAMPLE> &values)
+std::vector<unsigned char>    Opus::encode(const std::vector<SAMPLE> &values)
 {
     int nbBytes = 0;
     int i = 0;
-    float   *in = new float[values.size()];
     unsigned char   *result = new unsigned char[MAX_PACKET_SIZE];
 
 	;
     if (!_encoder)
         throw Exception("opus: no encoder initiated");
     else if (values.size() != SAMPLE_SIZE*CHANNELS || values.size() == 0)
-        return (std::tuple<unsigned char *, int>(nullptr, 0));
-    for (const SAMPLE value : values)
-        in[i++] = value;
-    nbBytes = opus_encode_float(_encoder, in, SAMPLE_SIZE, result, MAX_PACKET_SIZE);
-	delete[] in;
+        return (std::vector<unsigned char>());
+    nbBytes = opus_encode_float(_encoder, &values[0], SAMPLE_SIZE, result, MAX_PACKET_SIZE);
     std::cout << "opus: nbr of bytes - " << nbBytes << std::endl;
-    return (std::tuple<unsigned char *, int>(result, nbBytes));
+    return (std::vector<unsigned char>(result, result + nbBytes));
 }
 
 std::vector<SAMPLE> Opus::decode(const std::tuple<unsigned char *, int> &values)

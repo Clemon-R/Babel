@@ -16,7 +16,7 @@ LiveWindow::LiveWindow(QWidget *parent, const std::string &username, const std::
 	ui->btnParameter->hide();
 	this->_username = username;
     this->setWindowTitle(this->windowTitle().append(QString::fromStdString(username)));
-    _manager.reset(new ClientManager(this, username));
+    _manager.reset(new ClientManager(this, username, _volumeSpeaker, _volumeMicrophone));
 	_manager->connectToServer(ip, port);
 }
 
@@ -170,6 +170,11 @@ void LiveWindow::displayCallContactAccepted() {
 void LiveWindow::displayEndOfCall() {
 	QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "End of the call"));
 	QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : black; }"));
+}
+
+void LiveWindow::displayCallEtablish() {
+    QMetaObject::invokeMethod(ui->lblInfos, "setText", Qt::QueuedConnection, Q_ARG(QString, "Call etablish"));
+    QMetaObject::invokeMethod(ui->lblInfos, "setStyleSheet", Qt::QueuedConnection, Q_ARG(QString, "QLabel { color : green; }"));
 }
 
 void LiveWindow::insertListData(const std::string &name) {

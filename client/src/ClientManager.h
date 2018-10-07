@@ -15,7 +15,7 @@ class ClientController;
 
 class ClientManager {
 public:
-    ClientManager(LiveWindow *, const std::string &);
+    ClientManager(LiveWindow *, const std::string &, int &volumeSpeaker, int &volumeMicrophone);
 
     void    startHost();
     void    closeAllClients();
@@ -32,6 +32,7 @@ public:
     void    acceptCall();
     void    callRefused();
     void    callAccepted();
+    void    callEtablish();
     void    endOfCall();
     void    sendToServer(NetworkMessage const &message);
     void    sendToContact(NetworkMessage const &message);
@@ -59,6 +60,8 @@ private:
     std::unique_ptr<std::tuple<std::string, std::string, unsigned short>>   _requestCall;
     bool _imHost;
     bool _isCalling;
+    int &_volumeSpeaker;
+    int &_volumeMicrophone;
 };
 
 
