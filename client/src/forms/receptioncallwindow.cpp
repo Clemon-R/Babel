@@ -1,7 +1,7 @@
 #include "receptioncallwindow.h"
 #include "ui_receptioncallwindow.h"
 
-ReceptionCallWindow::ReceptionCallWindow(QWidget *parent, ClientManager *manager, const std::tuple<std::string, std::string, unsigned short> &infosContact) :
+ReceptionCallWindow::ReceptionCallWindow(QWidget *parent, ClientManager *manager, const std::tuple<std::string, std::string, unsigned short> infosContact) :
 	QDialog(parent),
 	ui(new Ui::ReceptionCallWindow),
 	_manager(manager),
