@@ -10,11 +10,11 @@
 class BinaryReader {
 public:
     BinaryReader();
-    explicit BinaryReader(char const *buffer, sizet size);
+    explicit BinaryReader(const boost::uint8_t *buffer, sizet size);
 
     void seek(sizet set);
     sizet tell() const;
-    void reset(char const *buffer, sizet size);
+    void reset(const boost::uint8_t *buffer, sizet size);
 
     template<class T>
     BinaryReader &operator&(T &primitive) {
@@ -44,7 +44,7 @@ private:
         if (_position + size > _size)
             throw std::runtime_error("exceeded buffer");
 
-        value = std::string(_buffer + _position, size);
+        value = std::string((char *) _buffer + _position, size);
         _position += size;
     }
 
@@ -71,6 +71,17 @@ private:
     }
 
     template<class T>
+    void readType(std::vector<boost::uint8_t> &list) {
+        boost::uint64_t size;
+        readType(size);
+
+        if (_position + size > _size)
+            throw std::runtime_error("exceeded buffer");
+
+        list.insert(list.begin(), _buffer + _position, _buffer + size);
+    }
+
+    template<class T>
     void readType(std::vector<std::string> &list) {
         boost::uint64_t size;
         readType(size);
@@ -82,13 +93,13 @@ private:
             if (_position + length > _size)
                 throw std::runtime_error("exceeded buffer");
 
-            list.emplace_back(_buffer + _position, length);
+            list.emplace_back((char *)_buffer + _position, length);
             _position += length;
         }
     }
 
 private:
-    char const *_buffer;
+    const boost::uint8_t *_buffer;
     sizet _size;
     sizet _position;
 };

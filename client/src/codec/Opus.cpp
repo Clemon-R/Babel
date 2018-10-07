@@ -40,7 +40,7 @@ std::vector<unsigned char>    Opus::encode(const std::vector<SAMPLE> &values)
     else if (values.size() != SAMPLE_SIZE*CHANNELS || values.size() == 0)
         return (std::vector<unsigned char>());
     nbBytes = opus_encode_float(_encoder, &values[0], SAMPLE_SIZE, result, MAX_PACKET_SIZE);
-    std::cout << "opus: nbr of bytes - " << nbBytes << std::endl;
+    std::cout << "opus: encodenbr of bytes - " << nbBytes << std::endl;
     return (std::vector<unsigned char>(result, result + nbBytes));
 }
 
@@ -59,6 +59,6 @@ std::vector<SAMPLE> Opus::decode(const std::vector<unsigned char> &values)
         throw Exception("opus: error while decoding");
     for (int i = 0;i < SAMPLE_SIZE*CHANNELS;i++)
         result.push_back(out[i]);
-    std::cout << "opus: nbr of frames - " << result.size() << std::endl;
+    std::cout << "opus: decode nbr of frames - " << result.size() << std::endl;
     return (result);
 }

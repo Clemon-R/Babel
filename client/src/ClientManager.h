@@ -36,7 +36,7 @@ public:
     void    endOfCall();
     void    sendToServer(NetworkMessage const &message);
     void    sendToContact(NetworkMessage const &message);
-    void    addSampleAudio(const std::vector<unsigned char> &samples);
+    void    addSampleAudio(std::vector<unsigned char> samples);
 
     std::vector<std::string> const &getContacts() const;
     bool    getImHost() const;
@@ -64,7 +64,7 @@ private:
     bool _isCalling;
     int &_volumeSpeaker;
     int &_volumeMicrophone;
-    std::deque<std::vector<unsigned char>> _listSamples;
+    std::vector<std::vector<unsigned char>> _listSamples;
 };
 
 

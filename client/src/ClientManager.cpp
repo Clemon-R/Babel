@@ -24,7 +24,8 @@ ClientManager::ClientManager(LiveWindow *ui, const std::string &username, int &v
           _imHost(false),
           _isCalling(false),
           _volumeSpeaker(volumeSpeaker),
-          _volumeMicrophone(volumeMicrophone)
+          _volumeMicrophone(volumeMicrophone),
+          _listSamples()
 {}
 
 void ClientManager::startHost() {
@@ -147,6 +148,55 @@ void ClientManager::acceptCall() {
 
 void ClientManager::callEtablish() {
     _ui->displayCallEtablish();
+    /*new std::thread([this]() {
+        std::unique_ptr<sound::Microphone>  mic(nullptr);
+        std::unique_ptr<sound::Speaker>  speak(nullptr);
+        std::unique_ptr<Opus>   codec(nullptr);
+        std::vector<unsigned char>  bin;
+        std::vector<SAMPLE> tmp;
+
+        try {
+            codec.reset(new Opus());
+            mic.reset(new sound::Microphone(_volumeMicrophone));
+            if (!mic)
+                return;
+            mic->start();
+            speak.reset(new sound::Speaker(_volumeSpeaker));
+            speak->start();
+            while (_isCalling) {
+                do {
+                    tmp = mic->getNextSample();
+                    if (tmp.size() == 0)
+                        break;
+                    bin = codec->encode(tmp);
+                    tmp = codec->decode(bin);
+                    //sendToContact(VoiceDataMessage(bin));
+                    BinaryWriter writer;
+                    writer & bin;
+                    for (auto &c: writer.bytes())
+                        printf("%d.", c);
+                    printf("\n");
+
+                    std::vector<uint8_t> test;
+                    BinaryReader reader;
+                    reader.reset(&writer.bytes()[0], writer.bytes().size());
+                    reader & test;
+
+                    if (tmp.empty())
+                        continue;
+                    speak->addFrames(tmp);
+                    bin.clear();
+                } while (tmp.size() > 0);
+                tmp.clear();
+                Pa_Sleep(10);
+            }
+            mic->stop();
+            //Pa_Terminate();
+        }
+        catch (const std::exception &error) {
+            std::cerr << error.what() << std::endl;
+        }
+    });*/
     new std::thread([this]() {
         std::unique_ptr<sound::Microphone>  mic(nullptr);
         std::unique_ptr<Opus>   codec(nullptr);
@@ -159,7 +209,37 @@ void ClientManager::callEtablish() {
             if (!mic)
                 return;
             mic->start();
-            while (_isCalling) {
+            new std::thread([this]() {
+                std::unique_ptr<sound::Speaker>  speak(nullptr);
+                std::unique_ptr<Opus>   codec(nullptr);
+                std::vector<unsigned char>  bin;
+                std::vector<SAMPLE> tmp;
+
+                try {
+                    codec.reset(new Opus());
+                    speak.reset(new sound::Speaker(_volumeSpeaker));
+                    speak->start();
+                    while (_imHost && _isCalling) {
+                        _lockerSpeaker.lock();
+                        while (_listSamples.begin() != _listSamples.end()) {
+                            tmp = codec->decode(*_listSamples.begin());
+                            _listSamples.erase(_listSamples.begin());
+                            if (tmp.empty())
+                                continue;
+                            speak->addFrames(tmp);
+                        }
+                        _lockerSpeaker.unlock();
+                        tmp.clear();
+                        Pa_Sleep(10);
+                    }
+                    speak->stop();
+                    //Pa_Terminate();
+                }
+                catch (const std::exception &error) {
+                    std::cerr << error.what() << std::endl;
+                }
+            });
+            while (!_imHost &&_isCalling) {
                 do {
                     tmp = mic->getNextSample();
                     if (tmp.size() == 0)
@@ -180,37 +260,6 @@ void ClientManager::callEtablish() {
             std::cerr << error.what() << std::endl;
         }
     });
-
-    /*new std::thread([this]() {
-        std::unique_ptr<sound::Speaker>  speak(nullptr);
-        std::unique_ptr<Opus>   codec(nullptr);
-        std::vector<unsigned char>  bin;
-        std::vector<SAMPLE> tmp;
-
-        try {
-            codec.reset(new Opus());
-            speak.reset(new sound::Speaker(_volumeSpeaker));
-            speak->start();
-            while (!_imHost && _isCalling) {
-                _lockerSpeaker.lock();
-                while (!_listSamples.empty()) {
-                    tmp = codec->decode(_listSamples.front());
-                    _listSamples.pop_front();
-                    if (tmp.empty())
-                        continue;
-                    speak->addFrames(tmp);
-                }
-                _lockerSpeaker.unlock();
-                tmp.clear();
-                Pa_Sleep(10);
-            }
-            speak->stop();
-            //Pa_Terminate();
-        }
-        catch (const std::exception &error) {
-            std::cerr << error.what() << std::endl;
-        }
-    });*/
 }
 
 const std::string &ClientManager::getCallContact() const {
@@ -256,13 +305,15 @@ void ClientManager::endOfCall() {
 void ClientManager::sendToContact(NetworkMessage const &message) {
     if (_imHost) {
         for (auto &client: _server.getClients())
-            client.second->send(message);
+            client.second->send(message, true);
     } else
-        _hostConnector.getClient()->send(message);
+        _hostConnector.getClient()->send(message, true);
 }
 
-void ClientManager::addSampleAudio(const std::vector<unsigned char> &samples) {
+void ClientManager::addSampleAudio(std::vector<unsigned char> samples) {
     lock_t lock(_lockerSpeaker);
 
-    _listSamples.push_back(samples);
+    std::cout << "tes\n";
+    _listSamples.emplace_back(std::vector<unsigned  char>(samples));
+    std::cout << "test\n";
 }

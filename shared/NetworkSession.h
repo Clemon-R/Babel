@@ -24,8 +24,8 @@ public:
     session_id getId() const;
     tcp::socket &getSocket();
 
-    void send(char const *bytes, sizet length, bool safe);
-    void send(std::vector<char> const &bytes, bool safe);
+    void send(const boost::uint8_t *bytes, sizet length, bool safe);
+    void send(std::vector<boost::uint8_t> const &bytes, bool safe);
 
 private:
     NetworkSession(session_id id, boost_io &io, NetworkSessionHandler &handler);
@@ -50,10 +50,10 @@ private:
     tcp::socket _socket;
     NetworkSessionHandler *_handler;
     State _state;
-    std::vector<char> _buffer;
+    std::vector<boost::uint8_t> _buffer;
     BinaryReader _reader;
     BinaryWriter _writer;
-    std::deque<std::vector<char>> _pending;
+    std::deque<std::vector<boost::uint8_t>> _pending;
 };
 
 

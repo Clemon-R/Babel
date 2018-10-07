@@ -24,9 +24,9 @@ void NetworkClient::send(NetworkMessage const &message, bool safe) {
     _session->send(_writer.bytes(), safe);
 }
 
-std::unique_ptr<NetworkMessage> NetworkClient::read(char const *bytes, sizet length) {
+std::unique_ptr<NetworkMessage> NetworkClient::read(const boost::uint8_t *bytes, sizet length) {
     _reader.reset(bytes, length);
-    return std::move(NetworkProtocol::deserialize(_reader));
+    return NetworkProtocol::deserialize(_reader);
 }
 
 void NetworkClient::kick() {

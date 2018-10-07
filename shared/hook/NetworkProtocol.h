@@ -60,7 +60,7 @@ namespace NetworkProtocol {
         try {
             std::unique_ptr<NetworkMessage> message(messages.at(id)());
             message->deserialize(reader);
-            return std::move(message);
+            return message;
         } catch (std::exception &e) {
             throw std::runtime_error("invalid protocol id received");
         }

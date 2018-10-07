@@ -6,7 +6,7 @@ conan_basic_setup(TARGETS)
 INCLUDE_DIRECTORIES(${CONAN_INCLUDE_DIRS})
 
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -std=c++17 -pthread")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -std=c++17 -g3")
 #add_definitions(-DBOOST_ALL_NO_LIB -DBOOST_ALL_DYN_LINK -DBOOST_LOG_DYN_LINK)
 
 if (UNIX) #Debug Qt on Unix

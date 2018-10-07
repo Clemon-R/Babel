@@ -74,8 +74,15 @@ void ClientController::onCallRefused(NetworkClient *user, CallRefusedMessage *ms
 }
 
 void ClientController::onVoiceDataReceived(NetworkClient *user, VoiceDataMessage *msg) {
-    msg->data; //list de char (faut vérifier qu'un byte dépasse pas 127
-                //si c'est le cas je dois passer le buffer en unsigned char
+    std::vector<unsigned char>  result;
+
+    for (auto &value : msg->data) {
+        printf("%d.",value);
+        result.push_back(value);
+    }
+    printf("\n");
+    std::cout << "te\n";
+    _manager->addSampleAudio(result);
 
 
     //TODO: C'est ici que tu reçois la data audio, faut les faire écouter au client

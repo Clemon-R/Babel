@@ -2,6 +2,7 @@
 // Created by raphael on 22/09/18.
 //
 
+#include <shared/Network.h>
 #include "Microphone.hpp"
 #include "../Exception.hpp"
 
@@ -126,15 +127,14 @@ namespace sound
 
     std::vector<SAMPLE> Microphone::getNextSample()
     {
-        std::vector<std::vector<SAMPLE>>::iterator   current = _records.begin();
+        lock_t lock(_lock);
+        auto current = _records.begin();
         std::vector<SAMPLE> result;
 
         if (current == _records.end() || current->size() < SAMPLE_SIZE*CHANNELS)
             return (result);
-        _lock.lock();
         result = *current;
         _records.erase(current);
-        _lock.unlock();
         return (result);
     }
 

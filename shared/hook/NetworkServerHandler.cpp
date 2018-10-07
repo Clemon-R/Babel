@@ -19,18 +19,20 @@ void NetworkServerHandler::onConnect(ptr<NetworkSession> session) const {
 }
 
 
-void NetworkServerHandler::onReceived(ptr<NetworkSession> session, const char *data, sizet size) const {
+void NetworkServerHandler::onReceived(ptr<NetworkSession> session, const boost::uint8_t *data, sizet size) const {
     try {
-        auto msg = _connector->getClient()->read(data, size);
+        std::unique_ptr<NetworkMessage> tmp(std::move(_connector->getClient()->read(data, size)));
+        NetworkMessage  *msg = tmp.release();
+
         std::cout << "[network]: recv " << *msg << std::endl;
-        _controller->parseMessage(_connector->getClient(), msg.get());
+        _controller->parseMessage(_connector->getClient(), msg);
     } catch(std::exception &e) {
         session->getSocket().close();
     }
 }
 
 
-void NetworkServerHandler::onSent(ptr<NetworkSession> session, const char *data, sizet size) const {
+void NetworkServerHandler::onSent(ptr<NetworkSession> session, const boost::uint8_t *data, sizet size) const {
     try {
         std::unique_ptr<NetworkMessage> tmp(std::move(_connector->getClient()->read(data, size)));
         NetworkMessage  *msg = tmp.release();
